@@ -1,12 +1,25 @@
-<script>
-    export let name;
+<script lang="ts">
+    export let name: string;
 
     import { onMount } from "svelte";
     import { createScene } from "./scene";
 
-    let el;
+    import { Octokit, App } from "octokit";
+
+    const octokit = new Octokit();
+
+    let el: HTMLCanvasElement;
 
     onMount(() => {
+        octokit.rest.users.getByUsername({ username: "augustinbegue" }).then(
+            (success) => {
+                console.log(success.data);
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+
         createScene(el);
     });
 </script>
