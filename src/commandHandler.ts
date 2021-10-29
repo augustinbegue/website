@@ -23,7 +23,7 @@ export class commandHandler {
         this._homeEl = homeEl;
         this._errorEl = errorEl;
 
-
+        // TODO: Proper transitions between pages
         this.addCommand("help", () => {
             this._errorEl.style.display = "none";
             this._helpEl.style.display = "block";
