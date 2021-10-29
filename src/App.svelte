@@ -1,57 +1,50 @@
 <script lang="ts">
-    export let name: string;
-
     import { onMount } from "svelte";
     import { createScene } from "./scene";
 
-    import { Octokit, App } from "octokit";
+    import { Octokit } from "octokit";
 
     const octokit = new Octokit();
 
     let el: HTMLCanvasElement;
+    let repos = [];
 
     onMount(() => {
-        octokit.rest.users.getByUsername({ username: "augustinbegue" }).then(
-            (success) => {
-                console.log(success.data);
+        createScene(el);
+
+        octokit.request({ url: "/users/augustinbegue/repos" }).then(
+            (result) => {
+                repos = result.data;
+                repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+                console.log(repos);
             },
-            (err) => {
-                console.log(err);
+            (error) => {
+                console.error(error);
             },
         );
-
-        createScene(el);
     });
 </script>
 
 <main>
-    <h1>Hello {name}!</h1>
-    <p>
-        Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
-        how to build Svelte apps.
-    </p>
-
-    <canvas bind:this={el} />
+    <canvas bind:this={el} class="z-0 absolute top-0 left-0" />
+    <div class="container mx-auto px-4 z-10">
+        {#each repos as repo}
+            <div
+                class="bg-white opacity-50 backdrop-filter backdrop-blur-lg p-4 m-4 rounded hover:opacity-80 transition-all"
+            >
+                <a href={repo.html_url} target="_blank">{repo.name}</a>
+                {repo.stargazers_count} stars
+            </div>
+        {/each}
+    </div>
 </main>
 
-<style>
-    main {
-        text-align: center;
-        padding: 1em;
-        max-width: 240px;
-        margin: 0 auto;
-    }
+<style global lang="postcss">
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
 
-    h1 {
-        color: #ff3e00;
-        text-transform: uppercase;
-        font-size: 4em;
-        font-weight: 100;
-    }
-
-    @media (min-width: 640px) {
-        main {
-            max-width: none;
-        }
+    .backdrop-blur-lg {
+        backdrop-filter: blur(16px);
     }
 </style>
