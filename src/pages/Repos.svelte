@@ -35,7 +35,6 @@
     }
 
     export function outro() {
-        console.log("repos outro called");
         displayRepos = false;
 
         return new Promise<void>((resolve) => {

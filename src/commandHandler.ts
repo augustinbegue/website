@@ -10,31 +10,28 @@ export class commandHandler {
         this._commands.push({ key, command });
     }
 
-    private hideAll() {
-        this._helpEl.style.display = "none";
-        this._errorEl.style.display = "none";
-    }
-
-    constructor(commandInputEl: HTMLElement, helpEl: HTMLElement, errorEl: HTMLElement, homePage: PageComponent, reposPage: PageComponent) {
-        this._helpEl = helpEl;
-        this._errorEl = errorEl;
+    constructor(commandInputEl: HTMLElement, helpPage: PageComponent, errorPage: PageComponent, homePage: PageComponent, reposPage: PageComponent) {
         let animation = "animate-bounce";
 
-        this.addCommand("help", () => {
-            // TODO: Transitions for errors and help
-            this._errorEl.style.display = "none";
-            this._helpEl.style.display = "block";
+        const hideAll = async () => {
+            await helpPage.outro();
+            await errorPage.outro();
+        }
+
+        this.addCommand("help", async () => {
+            await hideAll();
+            await helpPage.intro();
         });
 
         this.addCommand("display repos", async () => {
-            this.hideAll();
+            hideAll();
             await homePage.outro();
             await reposPage.intro();
 
         });
 
         this.addCommand("display home", async () => {
-            this.hideAll();
+            hideAll();
             await reposPage.outro();
             await homePage.intro();
         });
