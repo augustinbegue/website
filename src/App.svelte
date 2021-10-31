@@ -32,6 +32,7 @@
         showCommandInput = true;
     };
 
+    let errorMessage: string;
     let cc: {
         selectCommandInput: () => void;
     };
@@ -71,9 +72,10 @@
 </div>
 
 <div class="w-screen p-8 z-10 absolute bottom-0 font-mono">
-    <Help bind:this={helpPage} />
-    <Error bind:this={errorPage} />
     {#if showCommandInput}
+        <Help bind:this={helpPage} />
+        <Error bind:this={errorPage} />
+
         <div in:slide out:slide on:introend={initCommandInput}>
             <CommandInput
                 {commandInput}

@@ -1,37 +1,40 @@
 import type { PageComponent } from "./types";
+import { errorMessage } from "./stores";
 
 export class commandHandler {
     private _commands: { key: string, command: () => void }[] = [];
-    private _helpEl: HTMLElement;
-    private _errorEl: HTMLElement;
     commandHistory: string[] = [];
+    _helpPage: PageComponent;
+    _errorPage: PageComponent;
 
     private addCommand(key: string, command: () => void) {
         this._commands.push({ key, command });
     }
 
+    public async hideAll() {
+        this._helpPage.outro();
+        await this._errorPage.outro();
+    }
+
     constructor(commandInputEl: HTMLElement, helpPage: PageComponent, errorPage: PageComponent, homePage: PageComponent, reposPage: PageComponent) {
         let animation = "animate-bounce";
-
-        const hideAll = async () => {
-            await helpPage.outro();
-            await errorPage.outro();
-        }
+        this._helpPage = helpPage;
+        this._errorPage = errorPage;
 
         this.addCommand("help", async () => {
-            await hideAll();
+            await errorPage.outro();
             await helpPage.intro();
         });
 
         this.addCommand("display repos", async () => {
-            hideAll();
+            this.hideAll();
             await homePage.outro();
             await reposPage.intro();
 
         });
 
         this.addCommand("display home", async () => {
-            hideAll();
+            this.hideAll();
             await reposPage.outro();
             await homePage.intro();
         });
@@ -56,9 +59,9 @@ export class commandHandler {
         commandInputEl.value = "";
     }
 
-    public displayError(errorText: string) {
-        this._helpEl.style.display = "none";
-        this._errorEl.innerText = errorText;
-        this._errorEl.style.display = "block";
+    public async displayError(errorText: string) {
+        this._helpPage.outro();
+        this._errorPage.intro();
+        errorMessage.update(m => m = errorText);
     }
 }
