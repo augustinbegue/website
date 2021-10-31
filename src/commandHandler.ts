@@ -1,8 +1,8 @@
+import type { PageComponent } from "./types";
+
 export class commandHandler {
     private _commands: { key: string, command: () => void }[] = [];
     private _helpEl: HTMLElement;
-    private _reposEl: HTMLElement;
-    private _homeEl: HTMLElement;
     private _errorEl: HTMLElement;
     commandHistory: string[] = [];
 
@@ -12,31 +12,31 @@ export class commandHandler {
 
     private hideAll() {
         this._helpEl.style.display = "none";
-        this._reposEl.style.display = "none";
-        this._homeEl.style.display = "none";
         this._errorEl.style.display = "none";
     }
 
-    constructor(helpEl: HTMLElement, reposEl: HTMLElement, homeEl: HTMLElement, errorEl: HTMLElement) {
+    constructor(commandInputEl: HTMLElement, helpEl: HTMLElement, errorEl: HTMLElement, homePage: PageComponent, reposPage: PageComponent) {
         this._helpEl = helpEl;
-        this._reposEl = reposEl;
-        this._homeEl = homeEl;
         this._errorEl = errorEl;
+        let animation = "animate-bounce";
 
-        // TODO: Proper transitions between pages
         this.addCommand("help", () => {
+            // TODO: Transitions for errors and help
             this._errorEl.style.display = "none";
             this._helpEl.style.display = "block";
         });
 
-        this.addCommand("display repos", () => {
+        this.addCommand("display repos", async () => {
             this.hideAll();
-            this._reposEl.style.display = "block";
+            await homePage.outro();
+            await reposPage.intro();
+
         });
 
-        this.addCommand("display home", () => {
+        this.addCommand("display home", async () => {
             this.hideAll();
-            this._homeEl.style.display = "block";
+            await reposPage.outro();
+            await homePage.intro();
         });
     }
 

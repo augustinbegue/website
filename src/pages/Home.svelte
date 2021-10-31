@@ -1,11 +1,16 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { fade } from "svelte/transition";
+    import { fade, slide, fly } from "svelte/transition";
+    import { expoIn, expoOut } from "svelte/easing";
     import Typed from "typed.js";
 
     let showStep1 = true;
     let showStep2 = false;
     let showStep3 = false;
+
+    let showStep3Name = false;
+    let showStep3SurName = false;
+    let showStep3Info = false;
 
     let homeLoadingBarEl: HTMLElement;
 
@@ -40,19 +45,45 @@
         animateLoadBar();
     };
 
-    const animationStep3 = () => {
+    export let onIntroFinished: () => void;
+    const animationStep3 = async () => {
+        await intro();
         onIntroFinished();
     };
-
-    export let onIntroFinished: () => void;
 
     onMount(() => {
         animationStep1();
     });
+
+    export function intro() {
+        return new Promise<void>((resolve) => {
+            showStep3 = true;
+            showStep3Name = true;
+            showStep3SurName = true;
+            showStep3Info = true;
+
+            setTimeout(() => {
+                resolve();
+            }, 1000);
+        });
+    }
+
+    export function outro() {
+        return new Promise<void>((resolve) => {
+            showStep3Name = false;
+            showStep3SurName = false;
+            showStep3Info = false;
+
+            setTimeout(() => {
+                showStep3 = false;
+                resolve();
+            }, 1200);
+        });
+    }
 </script>
 
 {#if showStep1}
-    <div class=" font-mono text-left" out:fade>
+    <div class="w-full h-full font-mono text-left" out:fade>
         <span id="typed1Elements">
             <p>
                 `> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
@@ -179,7 +210,7 @@
 {/if}
 {#if showStep2}
     <div
-        class="container mx-auto p-4 h-screen w-screen flex items-center justify-center flex-col"
+        class="w-full h-full container mx-auto p-4 flex items-center justify-center flex-col"
         in:fade
         out:fade
         on:introend={animationStep2}
@@ -215,16 +246,38 @@
 {/if}
 {#if showStep3}
     <div
-        class="container mx-auto p-4 h-screen w-screen flex items-center justify-center"
-        in:fade
-        out:fade
+        class="w-full h-full container mx-auto p-4 flex items-center justify-center"
     >
         <div class="text-center">
-            <h1 class=" text-7xl md:text-9xl pb-10 font-extrabold">Augustin</h1>
-            <h2 class=" text-7xl md:text-9xl font-extrabold">BÉGUÉ</h2>
-            <h4 class=" text-base font-medium">19 yo</h4>
-            <h4 class=" text-base font-medium">student @ Epita</h4>
-            <h4 class=" text-base font-medium">Paris, France</h4>
+            {#if showStep3SurName}
+                <h1
+                    class=" text-7xl md:text-9xl pb-10 font-extrabold"
+                    in:slide={{ delay: 200, duration: 800 }}
+                    out:slide={{ delay: 200, duration: 800 }}
+                >
+                    Augustin
+                </h1>
+            {/if}
+            {#if showStep3Name}
+                <h2
+                    class=" text-7xl md:text-9xl font-extrabold"
+                    in:slide={{ duration: 600 }}
+                    out:slide={{ delay: 400, duration: 800 }}
+                >
+                    BÉGUÉ
+                </h2>
+            {/if}
+            {#if showStep3Info}
+                <div
+                    class="text-center"
+                    in:slide={{ delay: 600, duration: 600 }}
+                    out:slide={{ duration: 600 }}
+                >
+                    <h4 class=" text-base font-medium">19 yo</h4>
+                    <h4 class=" text-base font-medium">student @ Epita</h4>
+                    <h4 class=" text-base font-medium">Paris, France</h4>
+                </div>
+            {/if}
         </div>
     </div>
 {/if}

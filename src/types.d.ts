@@ -1,5 +1,4 @@
-export interface HomeComponent {
-    homeLoadingEl: HTMLElement,
-    homeLoadingBarEl: HTMLElement,
-    homeTextEl: HTMLElement,
+export interface PageComponent {
+    intro: () => Promise<void>;
+    outro: () => Promise<void>;
 }

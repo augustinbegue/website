@@ -1,40 +1,27 @@
 <script lang="ts">
     import { onMount } from "svelte";
+
     import { fade } from "svelte/transition";
-    import { Octokit } from "octokit";
 
     import { commandHandler } from "./commandHandler";
     import Home from "./pages/Home.svelte";
+    import Repos from "./pages/Repos.svelte";
+    import type { PageComponent } from "./types";
 
     // Command Handler
     let commandInput: HTMLInputElement;
-    let homeLoadingBarEl: HTMLElement;
-    let homeEl: HTMLElement;
-    let reposEl: HTMLElement;
+
+    let homePage: PageComponent;
+    let reposPage: PageComponent;
+
+    let pages: PageComponent[];
+
     let helpEl: HTMLElement;
     let errorEl: HTMLElement;
     let handler: commandHandler;
 
-    // Octokit
-    const octokit = new Octokit();
-    let repos = [];
-
     // Animations
     let showCommandInput = false;
-
-    onMount(() => {
-        // Octokit
-        octokit.request({ url: "/users/augustinbegue/repos" }).then(
-            (result) => {
-                repos = result.data;
-                repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
-                console.log(repos);
-            },
-            (error) => {
-                console.error(error);
-            },
-        );
-    });
 
     const onIntroFinished = () => {
         // Command Handler
@@ -42,9 +29,31 @@
     };
 
     const initCommandInput = () => {
-        handler = new commandHandler(helpEl, reposEl, homeEl, errorEl);
+        handler = new commandHandler(
+            commandInput,
+            helpEl,
+            errorEl,
+            homePage,
+            reposPage,
+        );
         commandInput.select();
         commandInput.focus();
+    };
+
+    onMount(() => {
+        pages = [homePage, reposPage];
+    });
+
+    let currentPage = 0;
+    const nextPage = async () => {
+        await pages[currentPage].outro();
+        currentPage = (currentPage + 1) % pages.length;
+        pages[currentPage].intro();
+    };
+    const prevPage = async () => {
+        await pages[currentPage].outro();
+        currentPage = (currentPage - 1 + pages.length) % pages.length;
+        pages[currentPage].intro();
     };
 </script>
 
@@ -64,28 +73,13 @@
     }}
 />
 
-<div bind:this={homeEl}>
-    <Home {onIntroFinished} />
-</div>
-
-<div
-    class="bg-gradient-to-bl from-green-500 to-blue-600 hidden"
-    bind:this={reposEl}
->
-    <div class="container mx-auto p-4">
-        {#each repos as repo}
-            <div
-                class="frosted p-4 m-4 rounded transition-all cursor-pointer bg-white opacity-80 hover:opacity-100 text-black"
-                on:click={() => {
-                    window.open(repo.html_url, "_blank");
-                }}
-            >
-                <a href={repo.html_url} target="_blank">{repo.name}</a>
-                {repo.stargazers_count} stars
-            </div>
-        {/each}
+<div class="page-container">
+    <div class="page">
+        <Home {onIntroFinished} bind:this={homePage} />
+        <Repos bind:this={reposPage} />
     </div>
 </div>
+
 <div class="w-screen p-8 z-10 absolute bottom-0 font-mono">
     <div class="bg-black m-4 p-4 text-white hidden rounded" bind:this={helpEl}>
         <p>Help:</p>
@@ -125,6 +119,18 @@
                     }
                 }}
             />
+            <button
+                on:click={prevPage}
+                class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded"
+            >
+                &#60;
+            </button>
+            <button
+                on:click={nextPage}
+                class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded"
+            >
+                &#62;
+            </button>
         </div>
     {/if}
 </div>
@@ -133,35 +139,32 @@
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
+    @tailwind screens;
+
+    @layer utilities {
+        @variants responsive {
+            /* Chrome, Safari and Opera */
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+
+            .no-scrollbar {
+                -ms-overflow-style: none; /* IE and Edge */
+                scrollbar-width: none; /* Firefox */
+            }
+        }
+    }
 
     body {
         background-attachment: fixed;
         padding: 0;
     }
 
-    .backdrop-blur-lg {
-        backdrop-filter: blur(16px);
+    .page-container {
+        @apply flex flex-row flex-nowrap w-screen h-screen;
     }
 
-    .frosted::before {
-        background: inherit;
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        box-shadow: inset 0 0 2000px rgba(255, 255, 255, 0.5);
-        filter: blur(10px);
-        z-index: -1;
-    }
-
-    .frosted {
-        box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
-        position: relative;
-        z-index: 1;
-        background: inherit;
-        overflow: hidden;
+    .page {
+        @apply w-screen h-screen min-w-full min-h-screen flex-shrink-0 overflow-hidden;
     }
 </style>
