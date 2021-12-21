@@ -8,6 +8,10 @@
 
     import Home from "./pages/Home.svelte";
     import Repos from "./pages/Repos.svelte";
+    import Timeline from "./pages/Timeline.svelte";
+    import About from "./pages/About.svelte";
+    import Projects from "./pages/Projects.svelte";
+
     import CommandInput from "./modules/CommandInput.svelte";
     import Help from "./modules/Help.svelte";
     import Error from "./modules/Error.svelte";
@@ -17,6 +21,9 @@
 
     let homePage: PageComponent;
     let reposPage: PageComponent;
+    let timelinePage: PageComponent;
+    let aboutPage: PageComponent;
+    let projectsPage: PageComponent;
     let pages: PageComponent[];
 
     let helpPage: PageComponent;
@@ -43,12 +50,15 @@
             errorPage,
             homePage,
             reposPage,
+            timelinePage,
+            aboutPage,
+            projectsPage,
         );
         cc.selectCommandInput();
     };
 
     onMount(() => {
-        pages = [homePage, reposPage];
+        pages = [homePage, aboutPage, projectsPage, timelinePage, reposPage];
     });
 
     let currentPage = 0;
@@ -68,6 +78,9 @@
     <div class="page">
         <Home {onIntroFinished} bind:this={homePage} />
         <Repos bind:this={reposPage} />
+        <Timeline bind:this={timelinePage} />
+        <About bind:this={aboutPage} />
+        <Projects bind:this={projectsPage} />
     </div>
 </div>
 

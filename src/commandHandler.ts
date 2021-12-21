@@ -6,6 +6,7 @@ export class commandHandler {
     commandHistory: string[] = [];
     _helpPage: PageComponent;
     _errorPage: PageComponent;
+    private _currentPage: PageComponent;
 
     private addCommand(key: string, command: () => void) {
         this._commands.push({ key, command });
@@ -16,10 +17,10 @@ export class commandHandler {
         await this._errorPage.outro();
     }
 
-    constructor(commandInputEl: HTMLElement, helpPage: PageComponent, errorPage: PageComponent, homePage: PageComponent, reposPage: PageComponent) {
-        let animation = "animate-bounce";
+    constructor(commandInputEl: HTMLElement, helpPage: PageComponent, errorPage: PageComponent, homePage: PageComponent, reposPage: PageComponent, timelinePage: PageComponent, aboutPage: PageComponent, projectsPage: PageComponent) {
         this._helpPage = helpPage;
         this._errorPage = errorPage;
+        this._currentPage = homePage;
 
         this.addCommand("help", async () => {
             await errorPage.outro();
@@ -28,15 +29,38 @@ export class commandHandler {
 
         this.addCommand("display repos", async () => {
             this.hideAll();
-            await homePage.outro();
+            await this._currentPage.outro();
             await reposPage.intro();
+            this._currentPage = reposPage;
 
         });
 
         this.addCommand("display home", async () => {
             this.hideAll();
-            await reposPage.outro();
+            await this._currentPage.outro();
             await homePage.intro();
+            this._currentPage = homePage;
+        });
+
+        this.addCommand("display timeline", async () => {
+            this.hideAll();
+            await this._currentPage.outro();
+            await timelinePage.intro();
+            this._currentPage = timelinePage;
+        });
+
+        this.addCommand("display about", async () => {
+            this.hideAll();
+            await this._currentPage.outro();
+            await aboutPage.intro();
+            this._currentPage = aboutPage;
+        });
+
+        this.addCommand("display projects", async () => {
+            this.hideAll();
+            await this._currentPage.outro();
+            await projectsPage.intro();
+            this._currentPage = projectsPage;
         });
     }
 

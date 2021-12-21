@@ -13,11 +13,21 @@
 
 <svelte:window
     on:keydown={(e) => {
-        // if key pressed is arrow up
+        // arrow up -> previous command
         if (e.key === "ArrowUp") {
             let command = "";
             if ((command = handler.commandHistory.pop()))
                 commandInput.value = command;
+        }
+
+        // left arrow -> previous page
+        if (e.key === "ArrowLeft") {
+            prevPage();
+        }
+
+        // right arrow -> next page
+        if (e.key === "ArrowRight") {
+            nextPage();
         }
 
         if (document.activeElement != commandInput) {
