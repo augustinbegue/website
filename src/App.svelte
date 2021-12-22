@@ -4,7 +4,7 @@
     import { slide } from "svelte/transition";
 
     import { commandHandler } from "./commandHandler";
-    import type { PageComponent } from "./types";
+    import type { PageComponent } from "./global";
 
     import Home from "./pages/Home.svelte";
     import Repos from "./pages/Repos.svelte";
@@ -76,10 +76,10 @@
 
 <div class="page-container">
     <div class="page">
-        <Home {onIntroFinished} bind:this={homePage} />
+        <!-- <Home {onIntroFinished} bind:this={homePage} />
         <Repos bind:this={reposPage} />
         <Timeline bind:this={timelinePage} />
-        <About bind:this={aboutPage} />
+        <About bind:this={aboutPage} /> -->
         <Projects bind:this={projectsPage} />
     </div>
 </div>
