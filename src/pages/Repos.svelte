@@ -15,6 +15,7 @@
                 repos = result.data;
                 repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
                 console.log(repos);
+                delay = repos.length * 100;
             },
             (error) => {
                 console.error(error);
@@ -23,6 +24,7 @@
     });
 
     let displayRepos = false;
+    let delay = 0;
 
     export function intro() {
         displayRepos = true;
@@ -30,7 +32,7 @@
         return new Promise<void>((resolve) => {
             setTimeout(() => {
                 resolve();
-            }, 400);
+            }, delay);
         });
     }
 
@@ -59,7 +61,7 @@
                             window.open(repo.html_url, "_blank");
                         }}
                         in:fade={{ delay: 100 * i }}
-                        out:fade={{ delay: 100 * i }}
+                        out:fade
                     >
                         <p>{repo.name}</p>
                         {repo.stargazers_count} stars

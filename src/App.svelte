@@ -40,38 +40,17 @@
     };
 
     let errorMessage: string;
-    let cc: {
+    let ci: {
         selectCommandInput: () => void;
     };
     const initCommandInput = () => {
-        handler = new commandHandler(
-            commandInput,
-            helpPage,
-            errorPage,
-            homePage,
-            reposPage,
-            timelinePage,
-            aboutPage,
-            projectsPage,
-        );
-        cc.selectCommandInput();
+        ci.selectCommandInput();
     };
 
     onMount(() => {
         pages = [homePage, aboutPage, projectsPage, timelinePage, reposPage];
+        handler = new commandHandler(commandInput, helpPage, errorPage, pages);
     });
-
-    let currentPage = 0;
-    const nextPage = async () => {
-        await pages[currentPage].outro();
-        currentPage = (currentPage + 1) % pages.length;
-        pages[currentPage].intro();
-    };
-    const prevPage = async () => {
-        await pages[currentPage].outro();
-        currentPage = (currentPage - 1 + pages.length) % pages.length;
-        pages[currentPage].intro();
-    };
 </script>
 
 <!-- TODO: Fix wierd behaviour where pages dont appear completely -->
@@ -94,9 +73,9 @@
             <CommandInput
                 {commandInput}
                 {handler}
-                {prevPage}
-                {nextPage}
-                bind:this={cc}
+                prevPage={handler.prevPage}
+                nextPage={handler.nextPage}
+                bind:this={ci}
             />
         </div>
     {/if}

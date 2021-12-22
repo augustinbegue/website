@@ -143,71 +143,76 @@
     >
         <div class="projects-grid">
             {#each projects as project, id}
-                <div
-                    class="{id === 0 || id === 4 ? 'md:col-span-2' : ''}
+                {#key project}
+                    <div
+                        class="{id === 0 || id === 4 ? 'md:col-span-2' : ''}
                         {id === 1
-                        ? 'md:row-span-2'
-                        : ''} m-4 bg-black rounded text-white"
-                    in:slide={{ delay: 150 * id }}
-                    out:slide={{ delay: 150 * (projects.length - (id + 1)) }}
-                >
-                    <div class="flex place-content-between p-4 pb-2">
-                        <span class="text-lg font-medium">{project.name}</span
-                        ><button class="hover:font-bold">[ ]</button>
-                    </div>
-                    <div class="p-4 pt-2 flex flex-row flex-wrap">
-                        {#if project.media.type === "video"}
-                            <video
-                                class="max-w-screen-sm w-full rounded"
-                                src={project.media.src}
-                                controls={true}
-                                autoplay={true}
-                                muted={true}
-                            />
-                        {:else}
-                            <img
-                                class="max-w-screen-sm w-full rounded"
-                                src={project.media.src}
-                                alt={project.name}
-                            />
-                        {/if}
-                        <div>
-                            <ul class="list-none list-inside font-mono p-2">
-                                <li>
-                                    {project.dates[0]} -> {project.dates[1]}
-                                </li>
-                                <li>
-                                    {#if project.link}
-                                        <a
-                                            class="text-blue-600 hover:underline"
-                                            href={project.link.url}
-                                            target="_blank"
-                                            >{project.link.display}</a
+                            ? 'md:row-span-2'
+                            : ''} m-4 bg-black rounded text-white"
+                        in:slide={{ delay: 150 * id }}
+                        out:slide={{
+                            delay: 150 * (projects.length - (id + 1)),
+                        }}
+                    >
+                        <div class="flex place-content-between p-4 pb-2">
+                            <span class="text-lg font-medium"
+                                >{project.name}</span
+                            ><button class="hover:font-bold">[ ]</button>
+                        </div>
+                        <div class="p-4 pt-2 flex flex-row flex-wrap">
+                            {#if project.media.type === "video"}
+                                <video
+                                    class="max-w-screen-sm w-full rounded"
+                                    src={project.media.src}
+                                    controls={true}
+                                    autoplay={true}
+                                    muted={true}
+                                />
+                            {:else}
+                                <img
+                                    class="max-w-screen-sm w-full rounded"
+                                    src={project.media.src}
+                                    alt={project.name}
+                                />
+                            {/if}
+                            <div>
+                                <ul class="list-none list-inside font-mono p-2">
+                                    <li>
+                                        {project.dates[0]} -> {project.dates[1]}
+                                    </li>
+                                    <li>
+                                        {#if project.link}
+                                            <a
+                                                class="text-blue-600 hover:underline"
+                                                href={project.link.url}
+                                                target="_blank"
+                                                >{project.link.display}</a
+                                            >
+                                        {:else}
+                                            <a
+                                                class="text-blue-600 hover:underline"
+                                                href={project.repo.url}
+                                                target="_blank"
+                                                >{project.repo.display}</a
+                                            >
+                                        {/if}
+                                    </li>
+                                    <li>
+                                        <span
+                                            class="{project.status ===
+                                            'in progress'
+                                                ? 'bg-yellow-400 hover:bg-black hover:text-yellow-400'
+                                                : project.status === 'inactive'
+                                                ? 'bg-gray-600 hover:bg-black hover:text-gray-600'
+                                                : project.status === 'completed'
+                                                ? 'bg-green-500 hover:bg-black hover:text-green-500'
+                                                : 'bg-red-500 hover:bg-black hover:text-red-500'} rounded-full px-2 p-1/2 duration-500 transition-all"
                                         >
-                                    {:else}
-                                        <a
-                                            class="text-blue-600 hover:underline"
-                                            href={project.repo.url}
-                                            target="_blank"
-                                            >{project.repo.display}</a
-                                        >
-                                    {/if}
-                                </li>
-                                <li>
-                                    <span
-                                        class="{project.status === 'in progress'
-                                            ? 'bg-yellow-400 hover:bg-black hover:text-yellow-400'
-                                            : project.status === 'inactive'
-                                            ? 'bg-gray-600 hover:bg-black hover:text-gray-600'
-                                            : project.status === 'completed'
-                                            ? 'bg-green-500 hover:bg-black hover:text-green-500'
-                                            : 'bg-red-500 hover:bg-black hover:text-red-500'} rounded-full px-2 p-1/2 duration-500 transition-all"
-                                    >
-                                        {project.status}
-                                    </span>
-                                </li>
-                            </ul>
-                            <!-- <div class="flex flex-row flex-wrap font-mono ">
+                                            {project.status}
+                                        </span>
+                                    </li>
+                                </ul>
+                                <!-- <div class="flex flex-row flex-wrap font-mono ">
                                 {#each project.tags as tag}
                                     <span
                                         class="m-1 px-3 rounded-full bg-gradient-to-bl from-green-500 to-blue-600"
@@ -215,9 +220,10 @@
                                     >
                                 {/each}
                             </div> -->
+                            </div>
                         </div>
                     </div>
-                </div>
+                {/key}
             {/each}
         </div>
     </div>
