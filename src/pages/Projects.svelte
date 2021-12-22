@@ -1,9 +1,12 @@
 <script lang="ts">
     import type { Project } from "../global";
 
-    import { slide } from "svelte/transition";
+    import { slide, blur } from "svelte/transition";
 
     let display = false;
+
+    // Fullscreen project
+    let fullscreen_project: Project | null = null;
 
     let projects: Project[] = [];
 
@@ -135,11 +138,107 @@
             }, delay);
         });
     }
+
+    function setFullScreenProject(project: Project | null) {
+        fullscreen_project = project;
+    }
 </script>
+
+{#if fullscreen_project}
+    <div
+        in:blur
+        out:blur
+        class="w-full h-full bg-black bg-opacity-60 z-40 absolute top-0 left-0 flex items-center justify-center"
+    >
+        <div
+            in:slide
+            out:slide
+            class="container rounded bg-black opacity-90 p-4 m-4 transition-all duration-300 text-white hover:opacity-100"
+        >
+            <div class="flex place-content-between p-4 pb-2">
+                <span class="text-xl font-bold">{fullscreen_project.name}</span>
+                <button
+                    class="hover:font-bold text-xl"
+                    on:click={() => {
+                        setFullScreenProject(null);
+                    }}>x</button
+                >
+            </div>
+            <div class="p-4 pt-2 flex flex-row">
+                {#if fullscreen_project.media.type === "video"}
+                    <video
+                        class="w-full rounded max-w-screen-lg"
+                        src={fullscreen_project.media.src}
+                        controls={true}
+                        autoplay={true}
+                        muted={true}
+                    />
+                {:else}
+                    <img
+                        class="w-full rounded max-w-screen-lg"
+                        src={fullscreen_project.media.src}
+                        alt={fullscreen_project.name}
+                    />
+                {/if}
+                <div class="p-4 pt-0">
+                    <p class="pt-0 p-2">{fullscreen_project.description}</p>
+                    <ul class="list-none list-inside font-mono p-2">
+                        {#if fullscreen_project.link}
+                            <li>
+                                <a
+                                    class="underline hover:decoration-blue-600"
+                                    href={fullscreen_project.link.url}
+                                    target="_blank"
+                                    >{fullscreen_project.link.display}</a
+                                >
+                            </li>
+                        {/if}
+                        {#if fullscreen_project.repo}
+                            <li>
+                                <a
+                                    class="underline hover:decoration-blue-600"
+                                    href={fullscreen_project.repo.url}
+                                    target="_blank"
+                                    >{fullscreen_project.repo.display}</a
+                                >
+                            </li>
+                        {/if}
+                        <li>
+                            <span
+                                class="{fullscreen_project.status ===
+                                'in progress'
+                                    ? 'bg-yellow-400 hover:bg-black hover:text-yellow-400'
+                                    : fullscreen_project.status === 'inactive'
+                                    ? 'bg-gray-600 hover:bg-black hover:text-gray-600'
+                                    : fullscreen_project.status === 'completed'
+                                    ? 'bg-green-500 hover:bg-black hover:text-green-500'
+                                    : 'bg-red-500 hover:bg-black hover:text-red-500'} rounded-full px-2 p-1/2 duration-500 transition-all"
+                            >
+                                {fullscreen_project.status}
+                            </span>
+                        </li>
+                        <li>
+                            {fullscreen_project.dates[0]} -> {fullscreen_project
+                                .dates[1]}
+                        </li>
+                    </ul>
+                    <div class="flex flex-row flex-wrap font-mono pt-4">
+                        {#each fullscreen_project.tags as tag}
+                            <span
+                                class="m-1 px-3 rounded-full bg-gradient-to-bl from-green-500 to-blue-600"
+                                >{tag}</span
+                            >
+                        {/each}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}
 
 {#if display}
     <div
-        class="container mx-auto p-4 pt-32 pb-32 overflow-y-scroll h-full md:no-scrollbar"
+        class="z-30 container mx-auto p-4 pt-32 pb-32 overflow-y-scroll h-full md:no-scrollbar"
     >
         <div class="projects-grid">
             {#each projects as project, id}
@@ -157,7 +256,12 @@
                         <div class="flex place-content-between p-4 pb-2">
                             <span class="text-lg font-medium"
                                 >{project.name}</span
-                            ><button class="hover:font-bold">[ ]</button>
+                            ><button
+                                class="hover:font-bold"
+                                on:click={() => {
+                                    setFullScreenProject(project);
+                                }}>[ ]</button
+                            >
                         </div>
                         <div class="p-4 pt-2 flex flex-row flex-wrap">
                             {#if project.media.type === "video"}
@@ -178,19 +282,16 @@
                             <div>
                                 <ul class="list-none list-inside font-mono p-2">
                                     <li>
-                                        {project.dates[0]} -> {project.dates[1]}
-                                    </li>
-                                    <li>
                                         {#if project.link}
                                             <a
-                                                class="text-blue-600 hover:underline"
+                                                class="underline hover:decoration-blue-600"
                                                 href={project.link.url}
                                                 target="_blank"
                                                 >{project.link.display}</a
                                             >
                                         {:else}
                                             <a
-                                                class="text-blue-600 hover:underline"
+                                                class="underline hover:decoration-blue-600"
                                                 href={project.repo.url}
                                                 target="_blank"
                                                 >{project.repo.display}</a
@@ -211,15 +312,10 @@
                                             {project.status}
                                         </span>
                                     </li>
+                                    <li>
+                                        {project.dates[0]} -> {project.dates[1]}
+                                    </li>
                                 </ul>
-                                <!-- <div class="flex flex-row flex-wrap font-mono ">
-                                {#each project.tags as tag}
-                                    <span
-                                        class="m-1 px-3 rounded-full bg-gradient-to-bl from-green-500 to-blue-600"
-                                        >{tag}</span
-                                    >
-                                {/each}
-                            </div> -->
                             </div>
                         </div>
                     </div>
