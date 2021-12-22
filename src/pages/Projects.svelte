@@ -153,7 +153,7 @@
         <div
             in:slide
             out:slide
-            class="container rounded bg-black opacity-90 p-4 m-4 transition-all duration-300 text-white hover:opacity-100"
+            class="container max-h-full overflow-x-scroll md:no-scrollbar p-4 md:rounded bg-black opacity-90 transition-all duration-300 text-white hover:opacity-100"
         >
             <div class="flex place-content-between p-4 pb-2">
                 <span class="text-xl font-bold">{fullscreen_project.name}</span>
@@ -164,10 +164,10 @@
                     }}>x</button
                 >
             </div>
-            <div class="p-4 pt-2 flex flex-row">
+            <div class="p-4 pt-2 flex flex-row flex-wrap flex-shrink">
                 {#if fullscreen_project.media.type === "video"}
                     <video
-                        class="w-full rounded max-w-screen-lg"
+                        class="rounded md:w-1/2"
                         src={fullscreen_project.media.src}
                         controls={true}
                         autoplay={true}
@@ -175,13 +175,16 @@
                     />
                 {:else}
                     <img
-                        class="w-full rounded max-w-screen-lg"
+                        class="rounded md:w-1/2 object-contain"
+                        style="max-height: 50vh;"
                         src={fullscreen_project.media.src}
                         alt={fullscreen_project.name}
                     />
                 {/if}
                 <div class="p-4 pt-0">
-                    <p class="pt-0 p-2">{fullscreen_project.description}</p>
+                    <p class="pt-0 p-2 max-w-prose">
+                        {fullscreen_project.description}
+                    </p>
                     <ul class="list-none list-inside font-mono p-2">
                         {#if fullscreen_project.link}
                             <li>
