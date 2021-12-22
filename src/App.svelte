@@ -74,12 +74,13 @@
     };
 </script>
 
+<!-- TODO: Fix wierd behaviour where pages dont appear completely -->
 <div class="page-container">
     <div class="page">
-        <!-- <Home {onIntroFinished} bind:this={homePage} />
+        <Home {onIntroFinished} bind:this={homePage} />
         <Repos bind:this={reposPage} />
         <Timeline bind:this={timelinePage} />
-        <About bind:this={aboutPage} /> -->
+        <About bind:this={aboutPage} />
         <Projects bind:this={projectsPage} />
     </div>
 </div>

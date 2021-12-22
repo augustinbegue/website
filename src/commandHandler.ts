@@ -1,4 +1,4 @@
-import type { PageComponent } from "./types";
+import type { PageComponent } from "./global";
 import { errorMessage } from "./stores";
 
 export class commandHandler {

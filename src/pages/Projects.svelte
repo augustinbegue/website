@@ -1,7 +1,9 @@
 <script lang="ts">
     import type { Project } from "../global";
 
-    let display = true;
+    import { slide } from "svelte/transition";
+
+    let display = false;
 
     let projects: Project[] = [];
 
@@ -113,17 +115,24 @@
         status: "inactive",
     });
 
+    let delay = projects.length * 150;
+
     export function intro() {
         return new Promise<void>((resolve) => {
             display = true;
-            resolve();
+            setTimeout(() => {
+                resolve();
+            }, delay);
         });
     }
 
     export function outro() {
         return new Promise<void>((resolve) => {
             display = false;
-            resolve();
+
+            setTimeout(() => {
+                resolve();
+            }, delay);
         });
     }
 </script>
@@ -139,6 +148,8 @@
                         {id === 1
                         ? 'md:row-span-2'
                         : ''} m-4 bg-black rounded text-white"
+                    in:slide={{ delay: 150 * id }}
+                    out:slide={{ delay: 150 * (projects.length - (id + 1)) }}
                 >
                     <div class="flex place-content-between p-4 pb-2">
                         <span class="text-lg font-medium">{project.name}</span
