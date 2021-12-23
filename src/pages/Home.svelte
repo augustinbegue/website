@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { fade, slide, fly } from "svelte/transition";
-    import { expoIn, expoOut } from "svelte/easing";
+    import { fade, slide } from "svelte/transition";
+    import { popup } from "../transitions";
     import Typed from "typed.js";
 
     let showStep1 = true;
@@ -17,6 +17,13 @@
     // Animations
     const animationStep1 = () => {
         // Typed.js
+        let container = document.querySelector(
+            ".page-container",
+        ) as HTMLElement;
+
+        container.style.backgroundColor = "rgba(0,0,0,255)";
+        container.style.color = "rgba(255,255,255,255)";
+
         new Typed("#typed1", {
             stringsElement: "#typed1Elements",
             typeSpeed: 0,
@@ -29,6 +36,11 @@
 
     const animationStep2 = () => {
         homeLoadingBarEl = document.getElementById("homeLoadingBar");
+        let container = document.querySelector(
+            ".page-container",
+        ) as HTMLElement;
+        container.style.backgroundColor = "";
+        container.style.color = "";
 
         let progress = 0;
         const animateLoadBar = () => {
@@ -77,7 +89,7 @@
             setTimeout(() => {
                 showStep3 = false;
                 resolve();
-            }, 1200);
+            }, 900);
         });
     }
 </script>
@@ -98,7 +110,7 @@
                     class="font-bold">Initializing</span
                 >
                 Greeting Sequence ...
-                <br />` ^500 `> [ <span class="text-green-500">OK</span> ]
+                <br />` ^100 `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Reached Target</span>
                 Temporary File Manager Ready
                 <br />` `> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
@@ -121,16 +133,16 @@
                     class="font-bold">Loading</span
                 >
                 Assets ...
-                <br />` ^500 `> [ <span class="text-green-500">OK</span> ]
+                <br />` ^100 `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Loaded</span>
                 Fonts
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Loaded</span>
                 Styles
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Loaded</span>
                 Assets
-                <br />` ^100 `> [ <span class="text-green-500">OK</span> ]
+                <br />` ^100 `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Reached Target</span>
                 Network Manager Ready
                 <br />` `>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -145,16 +157,16 @@
                 <br />` `>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <span class="font-bold">Downloading</span>
                 Social Networks
-                <br />` ^400 `> [ <span class="text-green-500">OK</span> ]
+                <br />` ^400 `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Downloaded</span>
                 Name
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Downloaded</span>
                 Age
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Downloaded</span>
                 Repos
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Downloaded</span>
                 Social Networks
                 <br />` `> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
@@ -165,13 +177,13 @@
                     class="font-bold">Starting</span
                 >
                 Command Line Interpreter ...
-                <br />` ^200 `> [ <span class="text-green-500">OK</span> ]
+                <br />` ^200 `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Reached Target</span>
                 Greeting Animation Manager Ready
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Reached Target</span>
                 Command Line Interpreter Ready
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Reached Target</span>
                 Graphical Interface Ready
                 <br />` `> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
@@ -186,19 +198,19 @@
                     class="font-bold">Loading</span
                 >
                 Page Social
-                <br />` ^400 `> [ <span class="text-green-500">OK</span> ]
+                <br />` ^400 `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Loaded</span>
                 Page Home
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Loaded</span>
                 Page Repos
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Loaded</span>
                 Page Social
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Reached Target</span>
                 Pages Loaded
-                <br />` `> [ <span class="text-green-500">OK</span> ]
+                <br />` `> [ <span class="text-green-100">OK</span> ]
                 <span class="font-bold">Reached Target</span>
                 Greeting Sequence Initialized
                 <br />` ^1000
@@ -237,13 +249,14 @@
                 <div
                     id="homeLoadingBar"
                     style="width:0%"
-                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-bl from-green-500 to-blue-600 "
+                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-bl from-green-100 to-blue-600 "
                     bind:this={homeLoadingBarEl}
                 />
             </div>
         </div>
     </div>
 {/if}
+
 {#if showStep3}
     <div
         class="w-full h-full container mx-auto p-4 flex items-center justify-center dark:text-white"
@@ -251,26 +264,26 @@
         <div class="text-center">
             {#if showStep3SurName}
                 <h1
-                    class=" text-7xl md:text-9xl pb-10 font-extrabold"
-                    in:slide={{ delay: 200, duration: 800 }}
-                    out:slide={{ delay: 200, duration: 800 }}
+                    class="text-7xl md:text-9xl pb-10 font-extrabold text-dark-100 dark:text-white"
+                    in:popup={{ delay: 300, duration: 400, color: "#61AFEF" }}
+                    out:popup={{ delay: 200, duration: 700 }}
                 >
                     Augustin
                 </h1>
             {/if}
             {#if showStep3Name}
                 <h2
-                    class=" text-7xl md:text-9xl font-extrabold"
-                    in:slide={{ duration: 600 }}
-                    out:slide={{ delay: 400, duration: 800 }}
+                    class="text-7xl md:text-9xl font-extrabold text-dark-100 dark:text-white"
+                    in:popup={{ delay: 400, duration: 400, color: "#56B6C2" }}
+                    out:popup={{ delay: 300, duration: 600 }}
                 >
                     BÉGUÉ
                 </h2>
             {/if}
             {#if showStep3Info}
                 <div
-                    class="text-center"
-                    in:slide={{ delay: 600, duration: 600 }}
+                    class="text-center pt-8"
+                    in:slide={{ delay: 400, duration: 600 }}
                     out:slide={{ duration: 600 }}
                 >
                     <h4 class=" text-base font-medium">19 yo</h4>

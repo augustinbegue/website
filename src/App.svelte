@@ -105,11 +105,11 @@
     }
 
     .hovered {
-        @apply ring-offset-1 ring-1 ring-offset-transparent ring-neutral-900 dark:ring-white;
+        @apply ring-offset-1 ring-1 ring-offset-transparent ring-dark-200 dark:ring-dark-300;
     }
 
     .cursor {
-        @apply absolute z-50 h-px w-px p-2 rounded-full bg-white dark:bg-black bg-opacity-80 transition-opacity duration-300 hovered;
+        @apply absolute z-50 h-px w-px p-2 rounded-full bg-dark-500 dark:bg-dark-50 bg-opacity-80 transition-opacity duration-300 hovered;
     }
 
     .hoverable {
@@ -117,10 +117,14 @@
     }
 
     .page-container {
-        @apply flex flex-row flex-nowrap w-screen h-screen dark:bg-black dark:text-white;
+        @apply flex flex-row flex-nowrap w-screen h-screen dark:bg-dark-50 dark:text-white;
     }
 
     .page {
         @apply w-screen h-screen min-w-full min-h-screen flex-shrink-0 overflow-hidden;
+    }
+
+    .text-button {
+        @apply text-white px-2 hover:opacity-80 hover:text-black hover:bg-dark-200 dark:hover:bg-dark-300 transition-all rounded hover:font-bold;
     }
 </style>

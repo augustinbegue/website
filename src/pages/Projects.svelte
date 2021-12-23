@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Project } from "../global";
-
-    import { slide, blur } from "svelte/transition";
+    import { slide, blur, fade } from "svelte/transition";
+    import { onMount } from "svelte";
 
     let display = false;
 
@@ -140,197 +140,264 @@
         });
     }
 
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    // animated text bg
+    let tags = [];
+    let text = "";
+    let translation = [];
+
+    onMount(() => {
+        for (let i = 0; i < projects.length; i++) {
+            const project = projects[i];
+
+            for (let j = 0; j < project.tags.length; j++)
+                tags.push(project.tags[j]);
+        }
+
+        for (let i = 0; i < window.innerHeight / 100; i++) {
+            translation.push(
+                Math.floor(Math.random() * (window.innerWidth * 10)),
+            );
+        }
+
+        shuffle(tags);
+        text = tags.join(" / ");
+    });
+
     function setFullScreenProject(project: Project | null) {
         fullscreen_project = project;
     }
 </script>
 
-{#if fullscreen_project}
-    <div
-        in:blur
-        out:blur
-        class="w-full h-full bg-black bg-opacity-60 dark:bg-opacity-100 z-40 absolute top-0 left-0 flex items-center justify-center"
-    >
+{#if display}
+    {#if fullscreen_project}
         <div
-            in:slide
-            out:slide
-            class="container max-h-full overflow-x-scroll md:no-scrollbar p-4 md:rounded bg-black opacity-90 transition-all duration-300 text-white hover:opacity-100 dark:opacity-100 hoverable"
+            in:blur
+            out:blur
+            class="w-full h-full bg-dark-50 bg-opacity-60 dark:bg-opacity-100 z-40 absolute top-0 left-0 flex items-center justify-center"
         >
-            <div class="flex place-content-between p-4 pb-2">
-                <span class="text-xl font-bold">{fullscreen_project.name}</span>
-                <button
-                    class="hover:font-bold text-xl text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
-                    on:click={() => {
-                        setFullScreenProject(null);
-                    }}>x</button
-                >
-            </div>
-            <div class="p-4 pt-2 flex flex-row flex-wrap flex-shrink">
-                {#if fullscreen_project.media.type === "video"}
-                    <video
-                        class="rounded md:w-1/2"
-                        src={fullscreen_project.media.src}
-                        controls={true}
-                        autoplay={true}
-                        muted={true}
-                    />
-                {:else}
-                    <img
-                        class="rounded md:w-1/2 object-contain"
-                        style="max-height: 50vh;"
-                        src={fullscreen_project.media.src}
-                        alt={fullscreen_project.name}
-                    />
-                {/if}
-                <div class="p-4 pt-0">
-                    <p class="pt-0 p-2 max-w-prose">
-                        {fullscreen_project.description}
-                    </p>
-                    <ul class="list-none list-inside font-mono p-2">
-                        {#if fullscreen_project.link}
+            <div
+                in:slide
+                out:slide
+                class="container max-h-full overflow-x-scroll md:no-scrollbar p-4 md:rounded bg-dark-300 dark:bg-dark-100 transition-all duration-300 text-white hoverable"
+            >
+                <div class="flex place-content-between p-4 pb-2">
+                    <span class="text-xl font-bold"
+                        >{fullscreen_project.name}</span
+                    >
+                    <button
+                        class="text-xl text-button hoverable"
+                        on:click={() => {
+                            setFullScreenProject(null);
+                        }}>x</button
+                    >
+                </div>
+                <div class="p-4 pt-2 flex flex-row flex-wrap flex-shrink">
+                    {#if fullscreen_project.media.type === "video"}
+                        <video
+                            class="rounded md:w-1/2"
+                            src={fullscreen_project.media.src}
+                            controls={true}
+                            autoplay={true}
+                            muted={true}
+                        />
+                    {:else}
+                        <img
+                            class="rounded md:w-1/2 object-contain"
+                            style="max-height: 50vh;"
+                            src={fullscreen_project.media.src}
+                            alt={fullscreen_project.name}
+                        />
+                    {/if}
+                    <div class="p-4 pt-0">
+                        <p class="pt-0 p-2 max-w-prose">
+                            {fullscreen_project.description}
+                        </p>
+                        <ul class="list-none list-inside font-mono p-2">
+                            {#if fullscreen_project.link}
+                                <li>
+                                    <a
+                                        class="underline hoverable"
+                                        href={fullscreen_project.link.url}
+                                        target="_blank"
+                                        >{fullscreen_project.link.display}</a
+                                    >
+                                </li>
+                            {/if}
+                            {#if fullscreen_project.repo}
+                                <li>
+                                    <a
+                                        class="underline hoverable"
+                                        href={fullscreen_project.repo.url}
+                                        target="_blank"
+                                        >{fullscreen_project.repo.display}</a
+                                    >
+                                </li>
+                            {/if}
                             <li>
-                                <a
-                                    class="underline hoverable"
-                                    href={fullscreen_project.link.url}
-                                    target="_blank"
-                                    >{fullscreen_project.link.display}</a
+                                <span
+                                    class="{fullscreen_project.status ===
+                                    'in progress'
+                                        ? 'bg-yellow-100 hover:bg-dark-100 hover:text-yellow-100'
+                                        : fullscreen_project.status ===
+                                          'inactive'
+                                        ? 'bg-gray-600 hover:bg-dark-100 hover:text-gray-600'
+                                        : fullscreen_project.status ===
+                                          'completed'
+                                        ? 'bg-green-100 hover:bg-dark-100 hover:text-green-100'
+                                        : 'bg-red-100 hover:bg-dark-100 hover:text-red-100'} rounded-full px-2 p-1/2 duration-500 transition-all"
                                 >
+                                    {fullscreen_project.status}
+                                </span>
                             </li>
-                        {/if}
-                        {#if fullscreen_project.repo}
                             <li>
-                                <a
-                                    class="underline hoverable"
-                                    href={fullscreen_project.repo.url}
-                                    target="_blank"
-                                    >{fullscreen_project.repo.display}</a
-                                >
+                                {fullscreen_project.dates[0]} -> {fullscreen_project
+                                    .dates[1]}
                             </li>
-                        {/if}
-                        <li>
-                            <span
-                                class="{fullscreen_project.status ===
-                                'in progress'
-                                    ? 'bg-yellow-400 hover:bg-black hover:text-yellow-400'
-                                    : fullscreen_project.status === 'inactive'
-                                    ? 'bg-gray-600 hover:bg-black hover:text-gray-600'
-                                    : fullscreen_project.status === 'completed'
-                                    ? 'bg-green-500 hover:bg-black hover:text-green-500'
-                                    : 'bg-red-500 hover:bg-black hover:text-red-500'} rounded-full px-2 p-1/2 duration-500 transition-all"
-                            >
-                                {fullscreen_project.status}
-                            </span>
-                        </li>
-                        <li>
-                            {fullscreen_project.dates[0]} -> {fullscreen_project
-                                .dates[1]}
-                        </li>
-                    </ul>
-                    <div class="flex flex-row flex-wrap font-mono pt-4">
-                        {#each fullscreen_project.tags as tag}
-                            <span
-                                class="m-1 px-3 rounded-full bg-gradient-to-bl from-green-500 to-blue-600"
-                                >{tag}</span
-                            >
-                        {/each}
+                        </ul>
+                        <div class="flex flex-row flex-wrap font-mono pt-4">
+                            {#each fullscreen_project.tags as tag}
+                                <span
+                                    class="m-1 px-3 rounded-full bg-gradient-to-bl from-green-500 to-blue-600"
+                                    >{tag}</span
+                                >
+                            {/each}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-{/if}
-
-{#if display}
-    <div
-        class="z-30 container mx-auto p-4 pt-32 pb-32 overflow-y-scroll h-full md:no-scrollbar"
-    >
-        <div class="projects-grid">
-            {#each projects as project, id}
-                {#key project}
+    {/if}
+    <div>
+        <div class="z-20 absolute">
+            {#each translation as tr}
+                <div class="wrapper" in:fade out:fade>
                     <div
-                        class="
+                        class="marquee opacity-50"
+                        style="right: {tr}px; line-height: 9rem;"
+                    >
+                        <span
+                            class="font-mono text-[8rem] text-dark-500 dark:text-dark-200 whitespace-nowrap antialiased "
+                        >
+                            {text}
+                        </span>
+                        <span
+                            class="font-mono text-[8rem] text-dark-500 dark:text-dark-200 whitespace-nowrap antialiased"
+                        >
+                            {text}
+                        </span>
+                    </div>
+                </div>
+            {/each}
+        </div>
+        <div
+            class="z-30 absolute p-4 pt-32 pb-32 overflow-y-scroll w-full h-full md:no-scrollbar"
+        >
+            <div class="container mx-auto">
+                <div class="projects-grid">
+                    {#each projects as project, id}
+                        {#key project}
+                            <div
+                                class="
                             {id === 0 || id === 4 ? 'md:col-span-2' : ''}
                             {id === 1 ? 'md:row-span-2' : ''}
                             {fullscreen_project?.name === project.name
-                            ? 'dark:bg-neutral-900'
-                            : ''}
-                            m-4 bg-black rounded text-white transition-all duration-300 hoverable"
-                        in:slide={{ delay: 150 * id }}
-                        out:slide={{
-                            delay: 150 * (projects.length - (id + 1)),
-                        }}
-                        on:dblclick={() => {
-                            setFullScreenProject(project);
-                        }}
-                    >
-                        <div class="flex place-content-between p-4 pb-2">
-                            <span class="text-lg font-medium"
-                                >{project.name}</span
-                            ><button
-                                class="hover:font-bold text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
-                                on:click={() => {
+                                    ? 'dark:bg-dark-200'
+                                    : ''}
+                            m-4 bg-dark-300 dark:bg-dark-100 rounded text-white transition-all duration-300 hoverable"
+                                in:slide={{ delay: 150 * id }}
+                                out:slide={{
+                                    delay: 150 * (projects.length - (id + 1)),
+                                }}
+                                on:dblclick={() => {
                                     setFullScreenProject(project);
-                                }}>[ ]</button
+                                }}
                             >
-                        </div>
-                        <div class="p-4 pt-2 flex flex-row flex-wrap">
-                            {#if project.media.type === "video"}
-                                <video
-                                    class="max-w-screen-sm w-full rounded"
-                                    src={project.media.src}
-                                    controls={true}
-                                    autoplay={true}
-                                    muted={true}
-                                />
-                            {:else}
-                                <img
-                                    class="max-w-screen-sm w-full rounded"
-                                    src={project.media.src}
-                                    alt={project.name}
-                                />
-                            {/if}
-                            <div>
-                                <ul class="list-none list-inside font-mono p-2">
-                                    <li>
-                                        {#if project.link}
-                                            <a
-                                                class="underline hoverable"
-                                                href={project.link.url}
-                                                target="_blank"
-                                                >{project.link.display}</a
-                                            >
-                                        {:else}
-                                            <a
-                                                class="underline hoverable"
-                                                href={project.repo.url}
-                                                target="_blank"
-                                                >{project.repo.display}</a
-                                            >
-                                        {/if}
-                                    </li>
-                                    <li>
-                                        <span
-                                            class="{project.status ===
-                                            'in progress'
-                                                ? 'bg-yellow-400 hover:bg-black hover:text-yellow-400'
-                                                : project.status === 'inactive'
-                                                ? 'bg-gray-600 hover:bg-black hover:text-gray-600'
-                                                : project.status === 'completed'
-                                                ? 'bg-green-500 hover:bg-black hover:text-green-500'
-                                                : 'bg-red-500 hover:bg-black hover:text-red-500'} rounded-full px-2 p-1/2 duration-500 transition-all"
+                                <div
+                                    class="flex place-content-between p-4 pb-2"
+                                >
+                                    <span class="text-lg font-medium"
+                                        >{project.name}</span
+                                    ><button
+                                        class="text-button hoverable"
+                                        on:click={() => {
+                                            setFullScreenProject(project);
+                                        }}>[ ]</button
+                                    >
+                                </div>
+                                <div class="p-4 pt-2 flex flex-row flex-wrap">
+                                    {#if project.media.type === "video"}
+                                        <video
+                                            class="max-w-screen-sm w-full rounded"
+                                            src={project.media.src}
+                                            controls={true}
+                                            autoplay={true}
+                                            muted={true}
+                                        />
+                                    {:else}
+                                        <img
+                                            class="max-w-screen-sm w-full rounded"
+                                            src={project.media.src}
+                                            alt={project.name}
+                                        />
+                                    {/if}
+                                    <div>
+                                        <ul
+                                            class="list-none list-inside font-mono p-2"
                                         >
-                                            {project.status}
-                                        </span>
-                                    </li>
-                                    <li>
-                                        {project.dates[0]} -> {project.dates[1]}
-                                    </li>
-                                </ul>
+                                            <li>
+                                                {#if project.link}
+                                                    <a
+                                                        class="underline hoverable"
+                                                        href={project.link.url}
+                                                        target="_blank"
+                                                        >{project.link
+                                                            .display}</a
+                                                    >
+                                                {:else}
+                                                    <a
+                                                        class="underline hoverable"
+                                                        href={project.repo.url}
+                                                        target="_blank"
+                                                        >{project.repo
+                                                            .display}</a
+                                                    >
+                                                {/if}
+                                            </li>
+                                            <li>
+                                                <span
+                                                    class="{project.status ===
+                                                    'in progress'
+                                                        ? 'bg-yellow-100 hover:bg-dark-100 hover:text-yellow-100'
+                                                        : project.status ===
+                                                          'inactive'
+                                                        ? 'bg-dark-400 hover:bg-dark-100 hover:text-dark-400'
+                                                        : project.status ===
+                                                          'completed'
+                                                        ? 'bg-green-100 hover:bg-dark-100 hover:text-green-100'
+                                                        : 'bg-red-100 hover:bg-dark-100 hover:text-red-100'} rounded-full px-2 p-1/2 duration-500 transition-all"
+                                                >
+                                                    {project.status}
+                                                </span>
+                                            </li>
+                                            <li>
+                                                {project.dates[0]} -> {project
+                                                    .dates[1]}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                {/key}
-            {/each}
+                        {/key}
+                    {/each}
+                </div>
+            </div>
         </div>
     </div>
 {/if}
@@ -338,5 +405,30 @@
 <style lang="postcss">
     .projects-grid {
         @apply grid grid-flow-row grid-cols-1 md:grid-cols-3 gap-4 place-content-center;
+    }
+
+    .wrapper {
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .marquee {
+        position: relative;
+        white-space: nowrap;
+        overflow: hidden;
+        animation: marquee 200s linear infinite;
+        display: flex;
+        align-items: flex-start;
+        justify-content: start;
+        flex-wrap: nowrap;
+    }
+
+    @keyframes marquee {
+        0% {
+            transform: translate3d(0, 0, 0);
+        }
+        100% {
+            transform: translate3d(-50%, 0, 0);
+        }
     }
 </style>

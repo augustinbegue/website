@@ -60,7 +60,7 @@
             {#each repos as repo, i}
                 {#key repo}
                     <div
-                        class="frosted p-4 m-4 rounded transition-all bg-white dark:bg-black opacity-80 hover:opacity-100 text-black hoverable"
+                        class="frosted p-4 m-4 rounded transition-all bg-white dark:bg-black opacity-80 hover:opacity-100 text-black hoverable flex flex-col justify-start content-start"
                         on:click={() => {
                             window.open(repo.html_url, "_blank");
                         }}
@@ -68,7 +68,21 @@
                         out:fade
                     >
                         <p>{repo.name}</p>
-                        {repo.stargazers_count} stars
+                        <p>
+                            {repo.stargazers_count} stars | {repo.open_issues_count}
+                            issues
+                        </p>
+                        <div class="pt-2">
+                            {#each repo.topics as tag, i}
+                                {#key tag}
+                                    <span
+                                        class="inline-block bg-dark-100 rounded-full px-3 py-1 text-sm font-semibold text-dark-500 mr-2 bg-opacity-50"
+                                    >
+                                        {tag}
+                                    </span>
+                                {/key}
+                            {/each}
+                        </div>
                     </div>
                 {/key}
             {/each}

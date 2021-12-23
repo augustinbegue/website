@@ -22,12 +22,12 @@
 
         // left arrow -> previous page
         if (e.key === "ArrowLeft" && document.activeElement != commandInput) {
-            prevPage();
+            return prevPage();
         }
 
         // right arrow -> next page
         if (e.key === "ArrowRight" && document.activeElement != commandInput) {
-            nextPage();
+            return nextPage();
         }
 
         if (document.activeElement != commandInput) {
@@ -38,7 +38,7 @@
 />
 
 <div
-    class="w-full bg-black p-4 flex flex-row rounded ring-offset-1 focus-within:ring-1 focus-within:ring-offset-transparent focus-within:ring-neutral-900 focus-within:dark:ring-white transition-all duration-300 hoverable"
+    class="w-full bg-dark-100 p-4 flex flex-row rounded ring-offset-1 focus-within:ring-1 focus-within:ring-offset-transparent focus-within:ring-dark-200 focus-within:dark:ring-dark-300 transition-all duration-300 hoverable"
 >
     <p class="text-white animate-pulse">$&nbsp;</p>
     <input
@@ -59,7 +59,7 @@
             prevPage();
             e.target.blur();
         }}
-        class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
+        class="text-button hoverable"
     >
         &#60;
     </button>
@@ -68,7 +68,7 @@
             nextPage();
             e.target.blur();
         }}
-        class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
+        class="text-button hoverable"
     >
         &#62;
     </button>
