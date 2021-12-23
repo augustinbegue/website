@@ -25,10 +25,16 @@
 
 {#if displayHelp}
     <div
-        class="bg-black m-4 p-4 text-white rounded flex flex-row justify-between align-top"
+        class="bg-black m-4 p-4 text-white rounded flex flex-col justify-start align-top"
         in:slide
         out:slide
     >
+        <div class="flex place-content-between p-4 pb-2">
+            <span class="text-lg font-medium" /><button
+                class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
+                on:click={outro}>x</button
+            >
+        </div>
         <div>
             <p>Help:</p>
             <p>display [page] - displays the selected page</p>
@@ -44,7 +50,5 @@
             <br />
             <p>help - displays this help page</p>
         </div>
-
-        <button class="text-white" on:click={outro}>x</button>
     </div>
 {/if}

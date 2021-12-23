@@ -21,12 +21,12 @@
         }
 
         // left arrow -> previous page
-        if (e.key === "ArrowLeft") {
+        if (e.key === "ArrowLeft" && document.activeElement != commandInput) {
             prevPage();
         }
 
         // right arrow -> next page
-        if (e.key === "ArrowRight") {
+        if (e.key === "ArrowRight" && document.activeElement != commandInput) {
             nextPage();
         }
 
@@ -37,12 +37,14 @@
     }}
 />
 
-<div class="w-full bg-black p-4 flex flex-row rounded">
+<div
+    class="w-full bg-black p-4 flex flex-row rounded ring-offset-1 focus-within:ring-1 focus-within:ring-offset-transparent focus-within:ring-neutral-900 focus-within:dark:ring-white transition-all duration-300 hoverable"
+>
     <p class="text-white animate-pulse">$&nbsp;</p>
     <input
         type="text"
         placeholder="Type help for help..."
-        class="w-full bg-black text-white outline-none border-none"
+        class="w-full bg-transparent text-white outline-none border-none cursor-none"
         bind:this={commandInput}
         on:keypress={(e) => {
             // if key pressed is ENTER
@@ -53,14 +55,20 @@
         }}
     />
     <button
-        on:click={prevPage}
-        class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded"
+        on:click={(e) => {
+            prevPage();
+            e.target.blur();
+        }}
+        class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
     >
         &#60;
     </button>
     <button
-        on:click={nextPage}
-        class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded"
+        on:click={(e) => {
+            nextPage();
+            e.target.blur();
+        }}
+        class="text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
     >
         &#62;
     </button>

@@ -132,6 +132,7 @@
     export function outro() {
         return new Promise<void>((resolve) => {
             display = false;
+            setFullScreenProject(null);
 
             setTimeout(() => {
                 resolve();
@@ -148,17 +149,17 @@
     <div
         in:blur
         out:blur
-        class="w-full h-full bg-black bg-opacity-60 z-40 absolute top-0 left-0 flex items-center justify-center"
+        class="w-full h-full bg-black bg-opacity-60 dark:bg-opacity-100 z-40 absolute top-0 left-0 flex items-center justify-center"
     >
         <div
             in:slide
             out:slide
-            class="container max-h-full overflow-x-scroll md:no-scrollbar p-4 md:rounded bg-black opacity-90 transition-all duration-300 text-white hover:opacity-100"
+            class="container max-h-full overflow-x-scroll md:no-scrollbar p-4 md:rounded bg-black opacity-90 transition-all duration-300 text-white hover:opacity-100 dark:opacity-100 hoverable"
         >
             <div class="flex place-content-between p-4 pb-2">
                 <span class="text-xl font-bold">{fullscreen_project.name}</span>
                 <button
-                    class="hover:font-bold text-xl"
+                    class="hover:font-bold text-xl text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
                     on:click={() => {
                         setFullScreenProject(null);
                     }}>x</button
@@ -189,7 +190,7 @@
                         {#if fullscreen_project.link}
                             <li>
                                 <a
-                                    class="underline hover:decoration-blue-600"
+                                    class="underline hoverable"
                                     href={fullscreen_project.link.url}
                                     target="_blank"
                                     >{fullscreen_project.link.display}</a
@@ -199,7 +200,7 @@
                         {#if fullscreen_project.repo}
                             <li>
                                 <a
-                                    class="underline hover:decoration-blue-600"
+                                    class="underline hoverable"
                                     href={fullscreen_project.repo.url}
                                     target="_blank"
                                     >{fullscreen_project.repo.display}</a
@@ -247,20 +248,26 @@
             {#each projects as project, id}
                 {#key project}
                     <div
-                        class="{id === 0 || id === 4 ? 'md:col-span-2' : ''}
-                        {id === 1
-                            ? 'md:row-span-2'
-                            : ''} m-4 bg-black rounded text-white"
+                        class="
+                            {id === 0 || id === 4 ? 'md:col-span-2' : ''}
+                            {id === 1 ? 'md:row-span-2' : ''}
+                            {fullscreen_project?.name === project.name
+                            ? 'dark:bg-neutral-900'
+                            : ''}
+                            m-4 bg-black rounded text-white transition-all duration-300 hoverable"
                         in:slide={{ delay: 150 * id }}
                         out:slide={{
                             delay: 150 * (projects.length - (id + 1)),
+                        }}
+                        on:dblclick={() => {
+                            setFullScreenProject(project);
                         }}
                     >
                         <div class="flex place-content-between p-4 pb-2">
                             <span class="text-lg font-medium"
                                 >{project.name}</span
                             ><button
-                                class="hover:font-bold"
+                                class="hover:font-bold text-white px-2 hover:opacity-80 hover:text-black hover:bg-white transition-all rounded hoverable"
                                 on:click={() => {
                                     setFullScreenProject(project);
                                 }}>[ ]</button
@@ -287,14 +294,14 @@
                                     <li>
                                         {#if project.link}
                                             <a
-                                                class="underline hover:decoration-blue-600"
+                                                class="underline hoverable"
                                                 href={project.link.url}
                                                 target="_blank"
                                                 >{project.link.display}</a
                                             >
                                         {:else}
                                             <a
-                                                class="underline hover:decoration-blue-600"
+                                                class="underline hoverable"
                                                 href={project.repo.url}
                                                 target="_blank"
                                                 >{project.repo.display}</a

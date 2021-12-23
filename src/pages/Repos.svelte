@@ -49,14 +49,18 @@
 
 <!-- TODO: Automatically divide repos into pages -->
 {#if displayRepos}
-    <div class="bg-gradient-to-bl from-green-500 to-blue-600" in:blur out:blur>
+    <div
+        class="bg-gradient-to-bl from-green-500 dark:from-green-800 to-blue-600 dark:to-blue-800"
+        in:blur
+        out:blur
+    >
         <div
             class="container mx-auto p-4 overflow-y-scroll overflow-x-hidden w-full h-full max-h-screen pb-32 md:no-scrollbar"
         >
             {#each repos as repo, i}
                 {#key repo}
                     <div
-                        class="frosted p-4 m-4 rounded transition-all cursor-pointer bg-white opacity-80 hover:opacity-100 text-black"
+                        class="frosted p-4 m-4 rounded transition-all bg-white dark:bg-black opacity-80 hover:opacity-100 text-black hoverable"
                         on:click={() => {
                             window.open(repo.html_url, "_blank");
                         }}

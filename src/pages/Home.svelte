@@ -83,7 +83,7 @@
 </script>
 
 {#if showStep1}
-    <div class="w-full h-full font-mono text-left" out:fade>
+    <div class="w-full h-full font-mono text-left dark:text-white" out:fade>
         <span id="typed1Elements">
             <p>
                 `> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
@@ -215,7 +215,7 @@
         out:fade
         on:introend={animationStep2}
     >
-        <span class="flex">
+        <span class="flex dark:text-white">
             <!-- TODO: Real logo -->
             <h1
                 class="relative text-9xl pb-10 font-extrabold"
@@ -246,7 +246,7 @@
 {/if}
 {#if showStep3}
     <div
-        class="w-full h-full container mx-auto p-4 flex items-center justify-center"
+        class="w-full h-full container mx-auto p-4 flex items-center justify-center dark:text-white"
     >
         <div class="text-center">
             {#if showStep3SurName}

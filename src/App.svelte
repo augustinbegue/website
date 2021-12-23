@@ -1,10 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
-
     import { slide } from "svelte/transition";
-
-    import { commandHandler } from "./commandHandler";
     import type { PageComponent } from "./global";
+    import { commandHandler } from "./commandHandler";
+    import { cursorTracker } from "./cursorTracker";
 
     import Home from "./pages/Home.svelte";
     import Repos from "./pages/Repos.svelte";
@@ -37,6 +36,7 @@
     const onIntroFinished = () => {
         // Command Handler
         showCommandInput = true;
+        new cursorTracker();
     };
 
     let errorMessage: string;
@@ -99,12 +99,25 @@
     }
 
     body {
+        overflow: hidden;
         background-attachment: fixed;
         padding: 0;
     }
 
+    .hovered {
+        @apply ring-offset-1 ring-1 ring-offset-transparent ring-neutral-900 dark:ring-white;
+    }
+
+    .cursor {
+        @apply absolute z-50 h-px w-px p-2 rounded-full bg-white dark:bg-black bg-opacity-80 transition-opacity duration-300 hovered;
+    }
+
+    .hoverable {
+        @apply cursor-none rounded transition-all duration-300;
+    }
+
     .page-container {
-        @apply flex flex-row flex-nowrap w-screen h-screen;
+        @apply flex flex-row flex-nowrap w-screen h-screen dark:bg-black dark:text-white;
     }
 
     .page {
