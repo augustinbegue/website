@@ -106,6 +106,10 @@ export class cursorTracker {
     hideText() {
         this._displayingText = false;
 
+        // No text to hide
+        if (this._spans.length === 0)
+            return;
+
         let spans = this._spans[this._spans.length - 1].spans;
         for (let i = 0; i < spans.length; i++) {
             spans[i].remove();

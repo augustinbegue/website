@@ -117,7 +117,7 @@
         },
         tags: ["windows", "electron", "corsair", "ambilight"],
         dates: ["12/07/2019", "..."],
-        status: "inactive",
+        status: "in progress",
     });
 
     let delay = projects.length * 150;
@@ -135,7 +135,7 @@
         return new Promise<void>((resolve) => {
             display = false;
             setFullScreenProject(null);
-
+            ctr.hideText();
             setTimeout(() => {
                 resolve();
             }, delay);
