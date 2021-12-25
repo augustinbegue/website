@@ -111,6 +111,5 @@ export class cursorTracker {
             spans[i].remove();
         }
         this._spans.pop();
-
     }
 }

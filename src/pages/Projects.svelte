@@ -149,10 +149,7 @@
         }
     }
 
-    onMount(() => {
-        display = true;
-        ctr = new cursorTracker();
-    });
+    onMount(() => {});
 
     function setFullScreenProject(project: Project | null) {
         fullscreen_project = project;

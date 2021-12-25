@@ -18,6 +18,9 @@
     // Command Handler
     let commandInput: HTMLInputElement;
 
+    // Cursor Tracker
+    let ctr: cursorTracker;
+
     let homePage: PageComponent;
     let reposPage: PageComponent;
     let timelinePage: PageComponent;
@@ -36,7 +39,7 @@
     const onIntroFinished = () => {
         // Command Handler
         showCommandInput = true;
-        new cursorTracker();
+        ctr = new cursorTracker();
     };
 
     let errorMessage: string;
@@ -63,11 +66,11 @@
 <!-- TODO: Fix wierd behaviour where pages dont appear completely -->
 <div class="page-container">
     <div class="page">
-        <!-- <Home {onIntroFinished} bind:this={homePage} />
+        <Home {onIntroFinished} bind:this={homePage} />
         <Repos bind:this={reposPage} />
         <Timeline bind:this={timelinePage} />
-        <About bind:this={aboutPage} /> -->
-        <Projects bind:this={projectsPage} />
+        <About bind:this={aboutPage} />
+        <Projects {ctr} bind:this={projectsPage} />
     </div>
 </div>
 
