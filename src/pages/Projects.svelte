@@ -2,8 +2,10 @@
     import type { Project } from "../global";
     import { slide, blur, fade } from "svelte/transition";
     import { onMount } from "svelte";
+    import { cursorTracker } from "../cursorTracker";
 
     let display = false;
+    export let ctr: cursorTracker;
 
     // Fullscreen project
     let fullscreen_project: Project | null = null;
@@ -147,27 +149,9 @@
         }
     }
 
-    // animated text bg
-    let tags = [];
-    let text = "";
-    let translation = [];
-
     onMount(() => {
-        for (let i = 0; i < projects.length; i++) {
-            const project = projects[i];
-
-            for (let j = 0; j < project.tags.length; j++)
-                tags.push(project.tags[j]);
-        }
-
-        for (let i = 0; i < window.innerHeight / 100; i++) {
-            translation.push(
-                Math.floor(Math.random() * (window.innerWidth * 10)),
-            );
-        }
-
-        shuffle(tags);
-        text = tags.join(" / ");
+        display = true;
+        ctr = new cursorTracker();
     });
 
     function setFullScreenProject(project: Project | null) {
@@ -180,12 +164,12 @@
         <div
             in:blur
             out:blur
-            class="w-full h-full bg-dark-50 bg-opacity-60 dark:bg-opacity-100 z-40 absolute top-0 left-0 flex items-center justify-center"
+            class="w-full h-full  z-40 absolute top-0 left-0 flex items-center justify-center"
         >
             <div
                 in:slide
                 out:slide
-                class="container max-h-full overflow-x-scroll md:no-scrollbar p-4 md:rounded bg-dark-300 dark:bg-dark-100 transition-all duration-300 text-white hoverable"
+                class="container max-h-full overflow-x-scroll no-scrollbar p-4 md:rounded bg-dark-300 dark:bg-dark-100 transition-all duration-300 text-white hoverable"
             >
                 <div class="flex place-content-between p-4 pb-2">
                     <span class="text-xl font-bold"
@@ -198,7 +182,9 @@
                         }}>x</button
                     >
                 </div>
-                <div class="p-4 pt-2 flex flex-row flex-wrap flex-shrink">
+                <div
+                    class="p-4 pt-2 flex flex-row flex-wrap md:flex-nowrap flex-shrink"
+                >
                     {#if fullscreen_project.media.type === "video"}
                         <video
                             class="rounded md:w-1/2"
@@ -215,7 +201,7 @@
                             alt={fullscreen_project.name}
                         />
                     {/if}
-                    <div class="p-4 pt-0">
+                    <div class="md:pl-4 pt-4">
                         <p class="pt-0 p-2 max-w-prose">
                             {fullscreen_project.description}
                         </p>
@@ -264,7 +250,7 @@
                         <div class="flex flex-row flex-wrap font-mono pt-4">
                             {#each fullscreen_project.tags as tag}
                                 <span
-                                    class="m-1 px-3 rounded-full bg-gradient-to-bl from-green-500 to-blue-600"
+                                    class="m-1 px-3 rounded-full bg-gradient-to-bl animation-onedark-rainbow"
                                     >{tag}</span
                                 >
                             {/each}
@@ -275,27 +261,6 @@
         </div>
     {/if}
     <div>
-        <div class="z-20 absolute">
-            {#each translation as tr}
-                <div class="wrapper" in:fade out:fade>
-                    <div
-                        class="marquee opacity-50"
-                        style="right: {tr}px; line-height: 9rem;"
-                    >
-                        <span
-                            class="font-mono text-[8rem] text-dark-500 dark:text-dark-200 whitespace-nowrap antialiased "
-                        >
-                            {text}
-                        </span>
-                        <span
-                            class="font-mono text-[8rem] text-dark-500 dark:text-dark-200 whitespace-nowrap antialiased"
-                        >
-                            {text}
-                        </span>
-                    </div>
-                </div>
-            {/each}
-        </div>
         <div
             class="z-30 absolute p-4 pt-32 pb-32 overflow-y-scroll w-full h-full md:no-scrollbar"
         >
@@ -304,19 +269,29 @@
                     {#each projects as project, id}
                         {#key project}
                             <div
-                                class="
-                            {id === 0 || id === 4 ? 'md:col-span-2' : ''}
-                            {id === 1 ? 'md:row-span-2' : ''}
-                            {fullscreen_project?.name === project.name
-                                    ? 'dark:bg-dark-200'
-                                    : ''}
-                            m-4 bg-dark-300 dark:bg-dark-100 rounded text-white transition-all duration-300 hoverable"
+                                class="{id === 0 || id === 4
+                                    ? 'md:col-span-2'
+                                    : ''} {id === 1
+                                    ? 'md:row-span-2'
+                                    : ''} {fullscreen_project
+                                    ? fullscreen_project?.name === project.name
+                                        ? 'dark:bg-dark-100'
+                                        : 'opacity-10'
+                                    : ''} m-4 bg-dark-300 dark:bg-dark-50 rounded text-white transition-all duration-300 hoverable"
                                 in:slide={{ delay: 150 * id }}
                                 out:slide={{
                                     delay: 150 * (projects.length - (id + 1)),
                                 }}
                                 on:dblclick={() => {
                                     setFullScreenProject(project);
+                                }}
+                                on:mouseenter={() => {
+                                    ctr.displayText(
+                                        project.tags.join(" ") + " ",
+                                    );
+                                }}
+                                on:mouseleave={() => {
+                                    ctr.hideText();
                                 }}
                             >
                                 <div
@@ -328,6 +303,12 @@
                                         class="text-button hoverable"
                                         on:click={() => {
                                             setFullScreenProject(project);
+                                        }}
+                                        on:mouseenter={() => {
+                                            ctr.displayText("fullscreen ");
+                                        }}
+                                        on:mouseleave={() => {
+                                            ctr.hideText();
                                         }}>[ ]</button
                                     >
                                 </div>
@@ -405,30 +386,5 @@
 <style lang="postcss">
     .projects-grid {
         @apply grid grid-flow-row grid-cols-1 md:grid-cols-3 gap-4 place-content-center;
-    }
-
-    .wrapper {
-        max-width: 100%;
-        overflow: hidden;
-    }
-
-    .marquee {
-        position: relative;
-        white-space: nowrap;
-        overflow: hidden;
-        animation: marquee 200s linear infinite;
-        display: flex;
-        align-items: flex-start;
-        justify-content: start;
-        flex-wrap: nowrap;
-    }
-
-    @keyframes marquee {
-        0% {
-            transform: translate3d(0, 0, 0);
-        }
-        100% {
-            transform: translate3d(-50%, 0, 0);
-        }
     }
 </style>

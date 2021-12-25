@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { Octokit } from "octokit";
-
     import { blur, fade } from "svelte/transition";
+    import * as octicons from "@primer/octicons";
 
     // Octokit
     const octokit = new Octokit();
@@ -68,10 +68,20 @@
                         out:fade
                     >
                         <p>{repo.name}</p>
-                        <p>
-                            {repo.stargazers_count} stars | {repo.open_issues_count}
-                            issues
-                        </p>
+                        <div class="inline-flex items-center">
+                            <span class="opacity-50 mt-0.5">
+                                {@html octicons["star"].toSVG()}
+                            </span>
+                            <p class="mx-2">{repo.stargazers_count}</p>
+                            <span class="opacity-50 mt-0.5">
+                                {@html octicons["issue-opened"].toSVG()}
+                            </span>
+                            <p class="mx-2">{repo.open_issues_count}</p>
+                            <span class="opacity-50 mt-0.5">
+                                {@html octicons["repo-forked"].toSVG()}
+                            </span>
+                            <p class="mx-2">{repo.forks_count}</p>
+                        </div>
                         <div class="pt-2">
                             {#each repo.topics as tag, i}
                                 {#key tag}
