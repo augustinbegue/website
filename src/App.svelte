@@ -127,7 +127,7 @@
     }
 
     .cursor {
-        @apply absolute z-50 h-px w-px p-2 rounded-full bg-dark-500 dark:bg-dark-50 transition-opacity duration-300 hovered;
+        @apply absolute z-50 h-px w-px p-2 rounded-full bg-dark-500 dark:bg-dark-50 transition-opacity duration-300 hovered pointer-events-none;
         animation: rotate-360 1s linear infinite,
             text-onedark-rainbow 10s linear infinite;
     }
@@ -137,7 +137,7 @@
     }
 
     .cursor span {
-        @apply font-mono absolute w-5 left-0 top-0 text-sm;
+        @apply font-mono absolute w-5 left-0 top-0 text-sm pointer-events-none text-center opacity-100;
         transform-origin: bottom center;
     }
 

@@ -90,17 +90,22 @@ export class cursorTracker {
         let spansI = this._spans.length;
         this._spans.push({ spans: [], text });
 
-        for (let i = 0; i < text.length; i++) {
-            this._spans[spansI].spans.push(document.createElement("span"));
-            this._spans[spansI].spans[i].innerText = text[i];
-            this._spans[spansI].spans[i].style.opacity = "1";
-            this._spans[spansI].spans[i].style.transform = `translateY(-${height - 0.5}rem) translateX(-0.125rem) rotate(${i * rotationAmount}deg)`;
-            this._spans[spansI].spans[i].style.pointerEvents = "none";
-            this._spans[spansI].spans[i].style.height = `${height}rem`;
-            this._spans[spansI].spans[i].style.textAlign = "center";
-            this._cursor.appendChild(this._spans[spansI].spans[i]);
-            this._cursor.style.animationDuration = `${height * 2}s`;
-        }
+        let i = 0;
+        let interval = setInterval(() => {
+            if (i >= text.length || !this._spans[spansI]) {
+                clearInterval(interval);
+            }
+            else {
+
+                this._spans[spansI].spans.push(document.createElement("span"));
+                this._spans[spansI].spans[i].innerText = text[i];
+                this._spans[spansI].spans[i].style.transform = `translateY(-${height - 0.5}rem) translateX(-0.125rem) rotate(${i * rotationAmount}deg)`;
+                this._spans[spansI].spans[i].style.height = `${height}rem`;
+                this._cursor.appendChild(this._spans[spansI].spans[i]);
+                this._cursor.style.animationDuration = `${height * 2}s`;
+                i++;
+            }
+        }, 10);
     }
 
     hideText() {
@@ -110,10 +115,17 @@ export class cursorTracker {
         if (this._spans.length === 0)
             return;
 
-        let spans = this._spans[this._spans.length - 1].spans;
-        for (let i = 0; i < spans.length; i++) {
-            spans[i].remove();
-        }
-        this._spans.pop();
+        let spans = this._spans.pop().spans;
+        let spansLen = spans.length;
+
+        let i = 0;
+        let interval = setInterval(() => {
+            if (i >= spansLen) {
+                clearInterval(interval);
+            } else {
+                spans[i].remove();
+                i++;
+            }
+        }, 10);
     }
 }
