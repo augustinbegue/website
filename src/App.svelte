@@ -53,24 +53,18 @@
     onMount(() => {
         pages = [homePage, aboutPage, projectsPage, timelinePage, reposPage];
         handler = new commandHandler(commandInput, helpPage, errorPage, pages);
+        onIntroFinished();
     });
 </script>
-
-<canvas
-    id="imgcv"
-    height="500"
-    width="500"
-    style="position: absolute; top: 0px;"
-/>
 
 <!-- TODO: Fix wierd behaviour where pages dont appear completely -->
 <div class="page-container">
     <div class="page">
-        <Home {onIntroFinished} bind:this={homePage} />
+        <!-- <Home {onIntroFinished} bind:this={homePage} />
         <Repos bind:this={reposPage} />
-        <Timeline bind:this={timelinePage} />
+        <Timeline bind:this={timelinePage} /> -->
         <About bind:this={aboutPage} />
-        <Projects {ctr} bind:this={projectsPage} />
+        <!-- <Projects {ctr} bind:this={projectsPage} /> -->
     </div>
 </div>
 

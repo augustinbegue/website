@@ -7,6 +7,7 @@ import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 import css from 'rollup-plugin-css-only';
+import image from '@rollup/plugin-image';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -76,6 +77,7 @@ export default {
 			rootDir: './src',
 		}),
 		json(),
+		image(),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated

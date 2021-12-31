@@ -6,6 +6,9 @@ module.exports = {
   darkMode: "media", // or 'media' or 'class'
   theme: {
     extend: {
+      fontFamily: {
+        display: ['"Ibm Plex Sans"', "sans-serif"],
+      },
       colors: {
         dark: {
           50: "#21252B",
