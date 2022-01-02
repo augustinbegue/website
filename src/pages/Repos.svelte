@@ -54,7 +54,7 @@
         in:blur
         out:blur
     >
-        <div class="container mx-auto p-4 w-full h-full max-h-screen pb-32">
+        <div class="container mx-auto p-4 pb-32">
             {#each repos as repo, i}
                 {#key repo}
                     <div

@@ -1,5 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { fade, slide, blur } from "svelte/transition";
+
     import { cursorTracker } from "../cursorTracker";
 
     import me from "../assets/me.png";
@@ -16,17 +18,77 @@
 
     export let ctr: cursorTracker;
 
+    function initCanvas() {
+        let canvas = document.getElementById("me") as HTMLCanvasElement;
+        let image = new Image();
+        image.style.display = "none";
+        image.src = me;
+        image.id = "meimg";
+        canvas.append(image);
+
+        image.onload = () => {
+            resetImage();
+        };
+
+        let width = 400;
+        let height = 400;
+        let explosionKernelX = [];
+        let explosionKernelY = [];
+
+        for (let i = 0; i < width; i++) {
+            explosionKernelX[i] = [];
+            explosionKernelY[i] = [];
+            for (let j = 0; j < height; j++) {
+                explosionKernelX[i][j] = Math.floor(
+                    Math.sin(i / (20.26 * Math.PI)) * (j / 20),
+                );
+
+                explosionKernelY[i][j] = Math.floor(
+                    Math.sin(j / (20.26 * Math.PI)) * (i / 20),
+                );
+            }
+        }
+
+        canvas.onmousedown = (event: MouseEvent) => {
+            var rect = canvas.getBoundingClientRect(), // abs. size of element
+                scaleX = canvas.width / rect.width, // relationship bitmap vs. element for X
+                scaleY = canvas.height / rect.height; // relationship bitmap vs. element for Y
+
+            explodeAtCoordinates(
+                (event.clientX - rect.left) * scaleX,
+                (event.clientY - rect.top) * scaleY,
+                width,
+                height,
+                explosionKernelX,
+                explosionKernelY,
+            );
+        };
+    }
+
+    function resetImage() {
+        let canvas = document.getElementById("me") as HTMLCanvasElement;
+        let ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let img = document.getElementById("meimg") as HTMLImageElement;
+        ctx.drawImage(img, 0, 0);
+    }
+
     export function intro() {
         return new Promise<void>((resolve) => {
             display = true;
-            resolve();
+            setTimeout(() => {
+                resolve();
+            }, 400);
         });
     }
 
     export function outro() {
         return new Promise<void>((resolve) => {
             display = false;
-            resolve();
+            setTimeout(() => {
+                resolve();
+            }, 400);
         });
     }
 
@@ -75,66 +137,6 @@
 
         ctx.putImageData(result, startx, starty);
     }
-
-    function resetImage() {
-        let canvas = document.getElementById("me") as HTMLCanvasElement;
-        let ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        let img = document.getElementById("meimg") as HTMLImageElement;
-        ctx.drawImage(img, 0, 0);
-    }
-
-    onMount(async () => {
-        // TODO: remove these 2 lines
-        await intro();
-        ctr = new cursorTracker();
-
-        let canvas = document.getElementById("me") as HTMLCanvasElement;
-        let image = new Image();
-        image.style.display = "none";
-        image.src = me;
-        image.id = "meimg";
-        canvas.parentElement.prepend(image);
-
-        image.onload = () => {
-            resetImage();
-        };
-
-        let width = 400;
-        let height = 400;
-        let explosionKernelX = [];
-        let explosionKernelY = [];
-
-        for (let i = 0; i < width; i++) {
-            explosionKernelX[i] = [];
-            explosionKernelY[i] = [];
-            for (let j = 0; j < height; j++) {
-                explosionKernelX[i][j] = Math.floor(
-                    Math.sin(i / (20.26 * Math.PI)) * (j / 20),
-                );
-
-                explosionKernelY[i][j] = Math.floor(
-                    Math.sin(j / (20.26 * Math.PI)) * (i / 20),
-                );
-            }
-        }
-
-        canvas.onmousedown = (event: MouseEvent) => {
-            var rect = canvas.getBoundingClientRect(), // abs. size of element
-                scaleX = canvas.width / rect.width, // relationship bitmap vs. element for X
-                scaleY = canvas.height / rect.height; // relationship bitmap vs. element for Y
-
-            explodeAtCoordinates(
-                (event.clientX - rect.left) * scaleX,
-                (event.clientY - rect.top) * scaleY,
-                width,
-                height,
-                explosionKernelX,
-                explosionKernelY,
-            );
-        };
-    });
 </script>
 
 {#if display}
@@ -142,6 +144,7 @@
         <div class="flex md:flex-row flex-col items-start justify-between">
             <div
                 class="flex flex-col font-display md:w-auto w-full items-center"
+                transition:blur
             >
                 <h1 class="md:text-8xl text-6xl font-bold tracking-wider mb-8">
                     Augustin
@@ -156,6 +159,8 @@
                     height="817"
                     width="1332"
                     style="height: auto; width: 100%;"
+                    transition:blur
+                    on:introstart={() => initCanvas()}
                 />
                 <button
                     class="social-button hoverable relative right-10"
@@ -167,6 +172,7 @@
         </div>
         <div
             class="flex items-start md:justify-between justify-evenly pt-8 flex-wrap"
+            transition:slide
         >
             <button
                 class="social-button hoverable"
@@ -219,12 +225,15 @@
             </button>
         </div>
         <div class="container pt-8">
-            <div class="flex flex-col-reverse md:flex-row justify-between">
+            <div
+                class="flex flex-col-reverse md:flex-row justify-between"
+                transition:slide
+            >
                 <p
                     class="px-4 md:px-0 font-mono text-xl text-dark-100 dark:text-dark-500"
                 >
-                    Hi, I'm Augustin, an aspiring engineer from Paris, France.
-                    Currently, I'm 2nd year student at <a
+                    Hi, I'm Augustin, a 19yo aspiring engineer from Paris,
+                    France. Currently, I'm 2nd year student at <a
                         href="https://epita.fr"
                         class="hoverable">EPITA</a
                     >
@@ -243,7 +252,10 @@
                     Who Am I
                 </h1>
             </div>
-            <div class="flex flex-col md:flex-row justify-between pt-16">
+            <div
+                class="flex flex-col md:flex-row justify-between pt-16"
+                transition:slide
+            >
                 <h1
                     class="px-4 md:px-0 text-3xl md:text-5xl font-display font-bold"
                 >
@@ -345,7 +357,10 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col md:flex-row justify-between pt-16">
+            <div
+                class="flex flex-col md:flex-row justify-between pt-16"
+                transition:fade
+            >
                 <div class="experience">
                     <span class="text-xl font-semibold font-display"
                         >Endorphi - Fullstack developer</span
@@ -378,7 +393,7 @@
     }
 
     .experience {
-        @apply text-dark-100 rounded dark:text-dark-500 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25 flex flex-col;
+        @apply text-dark-100 rounded dark:text-dark-500 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25 flex flex-col py-4;
     }
 
     .skill {

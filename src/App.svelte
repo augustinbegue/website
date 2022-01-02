@@ -53,7 +53,6 @@
     onMount(() => {
         pages = [homePage, aboutPage, projectsPage, timelinePage, reposPage];
         handler = new commandHandler(commandInput, helpPage, errorPage, pages);
-        onIntroFinished();
     });
 </script>
 
@@ -61,11 +60,11 @@
 <div class="page-container">
     <div class="page">
         <div class="h-screen overflow-scroll md:no-scrollbar">
-            <!-- <Home {onIntroFinished} bind:this={homePage} />
+            <Home {onIntroFinished} bind:this={homePage} />
             <Repos bind:this={reposPage} />
-            <Timeline bind:this={timelinePage} /> -->
+            <Timeline bind:this={timelinePage} />
             <About {ctr} bind:this={aboutPage} />
-            <!-- <Projects {ctr} bind:this={projectsPage} /> -->
+            <Projects {ctr} bind:this={projectsPage} />
         </div>
     </div>
 </div>
