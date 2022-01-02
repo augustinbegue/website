@@ -21,8 +21,13 @@
     }
 
     function getColorIndicesForCoord(x, y, width) {
-        var red = y * (width * 4) + x * 4;
-        return [red, red + 1, red + 2, red + 3];
+        let red = y * (width * 4) + x * 4;
+        return {
+            r: red,
+            g: red + 1,
+            b: red + 2,
+            a: red + 3,
+        };
     }
 
     function explodeAtCoordinates(
@@ -44,23 +49,17 @@
 
         for (let xx = 0; xx < width; xx++) {
             for (let yy = 0; yy < height; yy++) {
-                let indices = getColorIndicesForCoord(
-                    xx + explosionKernelX,
-                    yy + explosionKernelY,
+                let src_indices = getColorIndicesForCoord(
+                    xx + explosionKernelX[xx][yy],
+                    yy + explosionKernelY[xx][yy],
                     width,
                 );
-                const [redIndex, greenIndex, blueIndex, alphaIndex] = indices;
+                let res_indices = getColorIndicesForCoord(xx, yy, width);
 
-                if (redIndex < 0) {
-                    continue;
-                } else if (alphaIndex >= imgData.data.length) {
-                    continue;
-                }
-
-                result.data[redIndex] = imgData.data[redIndex];
-                result.data[greenIndex] = imgData.data[greenIndex];
-                result.data[blueIndex] = imgData.data[blueIndex];
-                result.data[alphaIndex] = 255;
+                result.data[res_indices.r] = imgData.data[src_indices.r];
+                result.data[res_indices.g] = imgData.data[src_indices.g];
+                result.data[res_indices.b] = imgData.data[src_indices.b];
+                result.data[res_indices.a] = imgData.data[src_indices.a];
             }
         }
 
@@ -79,8 +78,8 @@
         canvas.parentElement.prepend(image);
         ctx.drawImage(image, 0, 0, 1332, 817);
 
-        let width = 100;
-        let height = 100;
+        let width = 400;
+        let height = 400;
         let explosionKernelX = [];
         let explosionKernelY = [];
 
@@ -88,8 +87,13 @@
             explosionKernelX[i] = [];
             explosionKernelY[i] = [];
             for (let j = 0; j < height; j++) {
-                explosionKernelX[i][j] = -1;
-                explosionKernelY[i][j] = -1;
+                explosionKernelX[i][j] = Math.floor(
+                    Math.sin(i / (20.26 * Math.PI)) * (j / 20),
+                );
+
+                explosionKernelY[i][j] = Math.floor(
+                    Math.sin(j / (20.26 * Math.PI)) * (i / 20),
+                );
             }
         }
 
