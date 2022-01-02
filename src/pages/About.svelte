@@ -25,7 +25,14 @@
         return [red, red + 1, red + 2, red + 3];
     }
 
-    function explodeAtCoordinates(x, y, width, height, explosionKernel) {
+    function explodeAtCoordinates(
+        x,
+        y,
+        width,
+        height,
+        explosionKernelX,
+        explosionKernelY,
+    ) {
         let canvas = document.getElementById("me") as HTMLCanvasElement;
         let ctx = canvas.getContext("2d");
 
@@ -37,15 +44,22 @@
 
         for (let xx = 0; xx < width; xx++) {
             for (let yy = 0; yy < height; yy++) {
-                let indices = getColorIndicesForCoord(xx, yy, width);
+                let indices = getColorIndicesForCoord(
+                    xx + explosionKernelX,
+                    yy + explosionKernelY,
+                    width,
+                );
                 const [redIndex, greenIndex, blueIndex, alphaIndex] = indices;
 
-                result.data[redIndex] =
-                    imgData.data[redIndex + explosionKernel[xx][yy]];
-                result.data[greenIndex] =
-                    imgData.data[greenIndex + explosionKernel[xx][yy]];
-                result.data[blueIndex] =
-                    imgData.data[blueIndex + explosionKernel[xx][yy]];
+                if (redIndex < 0) {
+                    continue;
+                } else if (alphaIndex >= imgData.data.length) {
+                    continue;
+                }
+
+                result.data[redIndex] = imgData.data[redIndex];
+                result.data[greenIndex] = imgData.data[greenIndex];
+                result.data[blueIndex] = imgData.data[blueIndex];
                 result.data[alphaIndex] = 255;
             }
         }
@@ -67,11 +81,15 @@
 
         let width = 100;
         let height = 100;
-        let explosionKernel = [];
-        for (let x = 0; x < width; x++) {
-            explosionKernel[x] = [];
-            for (let y = 0; y < height; y++) {
-                explosionKernel[x][y] = -1;
+        let explosionKernelX = [];
+        let explosionKernelY = [];
+
+        for (let i = 0; i < width; i++) {
+            explosionKernelX[i] = [];
+            explosionKernelY[i] = [];
+            for (let j = 0; j < height; j++) {
+                explosionKernelX[i][j] = -1;
+                explosionKernelY[i][j] = -1;
             }
         }
 
@@ -85,7 +103,8 @@
                 (event.clientY - rect.top) * scaleY,
                 width,
                 height,
-                explosionKernel,
+                explosionKernelX,
+                explosionKernelY,
             );
         };
     });
