@@ -153,7 +153,9 @@
                 >
             </div>
         </div>
-        <div class="flex items-start justify-between pt-8">
+        <div
+            class="flex items-start md:justify-between justify-evenly pt-8 flex-wrap"
+        >
             <button
                 class="social-button hoverable"
                 on:click={() => {
@@ -193,7 +195,7 @@
                 <i class="far fa-envelope fa-2x" />
                 <span>Mail</span>
             </button>
-
+            <!-- TODO: Implement resume in firebase -->
             <button
                 class="social-button hoverable"
                 on:click={() => {
@@ -203,6 +205,11 @@
                 <i class="far fa-file fa-2x" />
                 <span>Resume</span>
             </button>
+        </div>
+        <div class="container p-4 md:p-0">
+            <h1 class="text-4xl md:text-5xl font-display font-bold">
+                Who Am I
+            </h1>
         </div>
     </div>
 {/if}

@@ -126,6 +126,12 @@
             text-onedark-rainbow 10s linear infinite;
     }
 
+    @media (hover: none) {
+        .cursor {
+            display: none;
+        }
+    }
+
     .hoverable {
         @apply cursor-none rounded transition-all duration-300;
     }
