@@ -54,9 +54,7 @@
         in:blur
         out:blur
     >
-        <div
-            class="container mx-auto p-4 overflow-y-scroll overflow-x-hidden w-full h-full max-h-screen pb-32 md:no-scrollbar"
-        >
+        <div class="container mx-auto p-4 w-full h-full max-h-screen pb-32">
             {#each repos as repo, i}
                 {#key repo}
                     <div

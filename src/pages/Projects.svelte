@@ -247,7 +247,7 @@
                         <div class="flex flex-row flex-wrap font-mono pt-4">
                             {#each fullscreen_project.tags as tag}
                                 <span
-                                    class="m-1 px-3 rounded-full bg-gradient-to-bl animation-onedark-rainbow"
+                                    class="m-1 px-3 rounded-full animation-onedark-rainbow"
                                     >{tag}</span
                                 >
                             {/each}

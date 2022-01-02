@@ -3,8 +3,18 @@
     import { cursorTracker } from "../cursorTracker";
 
     import me from "../assets/me.png";
+    import typescript from "../assets/typescript.svg";
+    import c from "../assets/c.svg";
+    import csharp from "../assets/c_sharp.svg";
+    import angular from "../assets/angular.svg";
+    import firebase from "../assets/firebase.svg";
+    import svelte from "../assets/svelte.svg";
+    import electron from "../assets/electron.svg";
+    import react from "../assets/react.svg";
 
     let display = false;
+
+    export let ctr: cursorTracker;
 
     export function intro() {
         return new Promise<void>((resolve) => {
@@ -76,8 +86,10 @@
     }
 
     onMount(async () => {
+        // TODO: remove these 2 lines
         await intro();
-        new cursorTracker();
+        ctr = new cursorTracker();
+
         let canvas = document.getElementById("me") as HTMLCanvasElement;
         let image = new Image();
         image.style.display = "none";
@@ -126,7 +138,7 @@
 </script>
 
 {#if display}
-    <div class="container mx-auto md:pt-32 pt-8 pb-32">
+    <div class="container mx-auto md:pt-32 pt-8 pb-64">
         <div class="flex md:flex-row flex-col items-start justify-between">
             <div
                 class="flex flex-col font-display md:w-auto w-full items-center"
@@ -206,15 +218,199 @@
                 <span>Resume</span>
             </button>
         </div>
-        <div class="container p-4 md:p-0">
-            <h1 class="text-4xl md:text-5xl font-display font-bold">
-                Who Am I
-            </h1>
+        <div class="container pt-8">
+            <div class="flex flex-col-reverse md:flex-row justify-between">
+                <p
+                    class="px-4 md:px-0 font-mono text-xl text-dark-100 dark:text-dark-500"
+                >
+                    Hi, I'm Augustin, an aspiring engineer from Paris, France.
+                    Currently, I'm 2nd year student at <a
+                        href="https://epita.fr"
+                        class="hoverable">EPITA</a
+                    >
+                    where I learn maths & computer science to obtain an engineering
+                    degree. I'm also a self-taught web developer. On my free time,
+                    I enjoy cycling and am a Formula 1 and
+                    <span
+                        on:mouseenter={() =>
+                            ctr.displayText("aka soccer for americans... ")}
+                        on:mouseleave={() => ctr.hideText()}>football</span
+                    > fan.
+                </p>
+                <h1
+                    class="px-4 md:pr-0 md:pl-64 text-3xl md:text-5xl font-display font-bold flex-shrink-0"
+                >
+                    Who Am I
+                </h1>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between pt-16">
+                <h1
+                    class="px-4 md:px-0 text-3xl md:text-5xl font-display font-bold"
+                >
+                    Skillz & Experience
+                </h1>
+                <!-- TODO: Implement in firebase -->
+                <div
+                    class="w-full px-4 md:pr-0 md:pl-64 grid grid-cols-2 gap-4"
+                >
+                    <div
+                        class="skill"
+                        style="--color: #61AFEF; --progress: 80%;"
+                    >
+                        <span>
+                            <img src={typescript} />
+                            <span>TypeScript</span>
+                        </span>
+                        <span>4y+</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #E06C75; --progress: 70%;"
+                    >
+                        <span>
+                            <img src={angular} />
+                            <span>Angular</span>
+                        </span>
+                        <span>4y+</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #3B94DD; --progress: 65%;"
+                    >
+                        <span>
+                            <i class="fas fa-database text-blue-500 fa-2x" />
+                            <span>SQL</span>
+                        </span>
+                        <span>4y+</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #464B57; --progress: 60%;"
+                    >
+                        <span>
+                            <img src={electron} />
+                            <span>Electron</span>
+                        </span>
+                        <span>2y</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #E5C07B; --progress: 60%;"
+                    >
+                        <span>
+                            <img src={firebase} />
+                            <span>Firebase</span>
+                        </span>
+                        <span>2y+</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #98C379; --progress: 55%;"
+                    >
+                        <span>
+                            <img src={csharp} />
+                            <span>C#</span>
+                        </span>
+                        <span>2y</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #ff7b2e; --progress: 45%;"
+                    >
+                        <span>
+                            <img src={svelte} />
+                            <span>Svelte</span>
+                        </span>
+                        <span>8mo+</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #4DA1E6; --progress: 40%;"
+                    >
+                        <span>
+                            <img src={c} />
+                            <span>C</span>
+                        </span>
+                        <span>1y</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #56B6C2; --progress: 20%;"
+                    >
+                        <span>
+                            <img src={react} />
+                            <span>React</span>
+                        </span>
+                        <span>6mo+</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between pt-16">
+                <div class="experience">
+                    <span class="text-xl font-semibold font-display"
+                        >Endorphi - Fullstack developer</span
+                    >
+                    <span class="font-mono">
+                        2mo |
+                        {#each ["angular", "asp.net"] as tag}
+                            <span
+                                class="m-1 px-3 rounded-full animation-onedark-rainbow text-dark-50 text-sm"
+                                >{tag}</span
+                            >
+                        {/each}
+                        | Internship |
+                        <span class="text-sm">
+                            <span class="text-gray-500">
+                                <i class="fas fa-map-marker-alt" />
+                                Paris, France
+                            </span>
+                        </span>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 {/if}
 
 <style lang="postcss">
+    a {
+        @apply underline;
+    }
+
+    .experience {
+        @apply text-dark-100 rounded dark:text-dark-500 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25 flex flex-col;
+    }
+
+    .skill {
+        @apply flex justify-between items-start font-mono text-dark-100 rounded dark:text-dark-300  bg-dark-400 dark:bg-dark-100 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25;
+        background: linear-gradient(
+            90deg,
+            var(--color) 0%,
+            var(--color) var(--progress),
+            rgba(255, 0, 0, 0) var(--progress),
+            rgba(255, 0, 0, 0) 100%
+        );
+    }
+
+    .skill > span:nth-child(1) {
+        @apply flex flex-nowrap;
+    }
+
+    .skill > span:nth-child(2) {
+        @apply p-2 h-full;
+    }
+
+    .skill > span > img {
+        @apply rounded w-auto h-8 m-1;
+    }
+    .skill > span > i {
+        @apply flex items-center justify-center m-1;
+    }
+
+    .skill > span > span {
+        @apply p-2 h-full mix-blend-difference;
+    }
+
     .social-button {
         @apply p-1 m-1 flex justify-center items-center text-dark-100 hover:text-dark-50 dark:text-dark-400 dark:hover:text-dark-500 font-mono;
     }
