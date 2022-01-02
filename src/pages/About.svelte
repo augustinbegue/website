@@ -66,17 +66,28 @@
         ctx.putImageData(result, startx, starty);
     }
 
+    function resetImage() {
+        let canvas = document.getElementById("me") as HTMLCanvasElement;
+        let ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let img = document.getElementById("meimg") as HTMLImageElement;
+        ctx.drawImage(img, 0, 0);
+    }
+
     onMount(async () => {
         await intro();
         new cursorTracker();
         let canvas = document.getElementById("me") as HTMLCanvasElement;
-        let ctx = canvas.getContext("2d");
-
         let image = new Image();
         image.style.display = "none";
         image.src = me;
+        image.id = "meimg";
         canvas.parentElement.prepend(image);
-        ctx.drawImage(image, 0, 0, 1332, 817);
+
+        image.onload = () => {
+            resetImage();
+        };
 
         let width = 400;
         let height = 400;
@@ -115,19 +126,31 @@
 </script>
 
 {#if display}
-    <div class="container mx-auto pt-32 pb-32">
-        <div class="flex items-start justify-between">
-            <div class="flex flex-col items-start font-display">
-                <h1 class="text-8xl font-bold tracking-wider mb-8">Augustin</h1>
-                <h1 class="text-9xl font-black tracking-wide ">BÉGUÉ</h1>
+    <div class="container mx-auto md:pt-32 pt-8 pb-32">
+        <div class="flex md:flex-row flex-col items-start justify-between">
+            <div
+                class="flex flex-col font-display md:w-auto w-full items-center"
+            >
+                <h1 class="md:text-8xl text-6xl font-bold tracking-wider mb-8">
+                    Augustin
+                </h1>
+                <h1 class="md:text-9xl text-7xl font-black tracking-wide ">
+                    BÉGUÉ
+                </h1>
             </div>
-            <div>
+            <div class="flex flex-row items-start">
                 <canvas
                     id="me"
                     height="817"
                     width="1332"
                     style="height: auto; width: 100%;"
                 />
+                <button
+                    class="social-button hoverable relative right-10"
+                    on:click={() => {
+                        resetImage();
+                    }}><i class="fas fa-sync-alt " /></button
+                >
             </div>
         </div>
         <div class="flex items-start justify-between pt-8">
@@ -139,15 +162,6 @@
             >
                 <i class="fab fa-github fa-2x" />
                 <span>GitHub</span>
-            </button>
-            <button
-                class="social-button hoverable"
-                on:click={() => {
-                    window.open("https://instagram.com/tagueo", "_blank");
-                }}
-            >
-                <i class="fab fa-instagram fa-2x" />
-                <span>Instagram</span>
             </button>
             <button
                 class="social-button hoverable"
@@ -164,11 +178,30 @@
             <button
                 class="social-button hoverable"
                 on:click={() => {
+                    window.open("https://instagram.com/tagueo", "_blank");
+                }}
+            >
+                <i class="fab fa-instagram fa-2x" />
+                <span>Instagram</span>
+            </button>
+            <button
+                class="social-button hoverable"
+                on:click={() => {
                     window.open("mailto://augustin.begue@epita.fr", "_blank");
                 }}
             >
                 <i class="far fa-envelope fa-2x" />
                 <span>Mail</span>
+            </button>
+
+            <button
+                class="social-button hoverable"
+                on:click={() => {
+                    window.open("../static/CV.pdf", "_blank");
+                }}
+            >
+                <i class="far fa-file fa-2x" />
+                <span>Resume</span>
             </button>
         </div>
     </div>
