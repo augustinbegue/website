@@ -1,8 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { fade, slide, blur } from "svelte/transition";
-
-    import { cursorTracker } from "../cursorTracker";
 
     import me from "../assets/me.png";
     import typescript from "../assets/typescript.svg";
@@ -13,9 +10,10 @@
     import svelte from "../assets/svelte.svg";
     import electron from "../assets/electron.svg";
     import react from "../assets/react.svg";
+    import { onMount } from "svelte";
+    import { cursorTracker } from "../cursorTracker";
 
     let display = false;
-
     export let ctr: cursorTracker;
 
     function initCanvas() {
@@ -137,6 +135,15 @@
 
         ctx.putImageData(result, startx, starty);
     }
+
+    function toggleContent(e: MouseEvent) {
+        e.preventDefault();
+        e.stopPropagation();
+        let target = e.target as HTMLElement;
+        let content = target.getAttribute("content");
+        target.setAttribute("content", target.innerHTML);
+        target.innerHTML = content;
+    }
 </script>
 
 {#if display}
@@ -158,7 +165,7 @@
                     id="me"
                     height="817"
                     width="1332"
-                    style="height: auto; width: 100%;"
+                    class="w-full md:w-auto md:max-h-[30vh]"
                     transition:blur
                     on:introstart={() => initCanvas()}
                 />
@@ -230,7 +237,7 @@
                 transition:slide
             >
                 <p
-                    class="px-4 md:px-0 font-mono text-xl text-dark-100 dark:text-dark-500"
+                    class="px-4 md:px-0 font-mono text-lg md:text-xl text-dark-100 dark:text-dark-500"
                 >
                     Hi, I'm Augustin, a 19yo aspiring engineer from Paris,
                     France. Currently, I'm 2nd year student at <a
@@ -256,18 +263,48 @@
                 class="flex flex-col md:flex-row justify-between pt-16"
                 transition:slide
             >
-                <h1
-                    class="px-4 md:px-0 text-3xl md:text-5xl font-display font-bold"
-                >
-                    Skillz & Experience
-                </h1>
+                <div class=" md:max-w-[35vw]">
+                    <h1
+                        class="px-4 md:px-0 text-3xl md:text-5xl font-display font-bold"
+                    >
+                        Skillz
+                    </h1>
+                    <p
+                        class="px-4 pt-4 md:px-0 font-mono text-base md:text-lg text-dark-100 dark:text-dark-500"
+                    >
+                        While I'm familiar with and like languages like C and
+                        C#, designing and building webapps is what I enjoy the
+                        most for the moment.
+                    </p>
+                    <div class="font-mono my-8 px-4 md:px-0 ">
+                        <h2
+                            class="text-xl md:text-2xl font-display font-bold text-white hidden md:block"
+                        >
+                            Other things I can do
+                        </h2>
+                        <div class="my-2 flex flex-wrap">
+                            {#each ["web scraping", "image processing", "ocr", "rest API", "PWA", "unity", "asp.net"] as tag}
+                                <span
+                                    class="m-1 md:px-4 px-3 md:py-1 rounded-full animation-onedark-rainbow text-dark-50 whitespace-nowrap md:text-base text-sm"
+                                    >{tag}</span
+                                >
+                            {/each}
+                        </div>
+                    </div>
+                </div>
                 <!-- TODO: Implement in firebase -->
                 <div
-                    class="w-full px-4 md:pr-0 md:pl-64 grid grid-cols-2 gap-4"
+                    class="w-full px-4 md:pr-0 lg:pl-32 grid grid-cols-2 gap-4"
                 >
                     <div
-                        class="skill"
+                        class="skill hoverable"
                         style="--color: #61AFEF; --progress: 80%;"
+                        on:mouseleave={() => ctr.hideText()}
+                        on:mouseenter={() => {
+                            ctr.displayText(
+                                "nodejs / discord.js / express.js / ",
+                            );
+                        }}
                     >
                         <span>
                             <img src={typescript} />
@@ -316,14 +353,28 @@
                         <span>2y+</span>
                     </div>
                     <div
-                        class="skill"
+                        class="skill hoverable"
                         style="--color: #98C379; --progress: 55%;"
+                        on:mouseleave={() => ctr.hideText()}
+                        on:mouseenter={() => {
+                            ctr.displayText("Unity / ASP.NET / .NET Core / ");
+                        }}
                     >
                         <span>
                             <img src={csharp} />
                             <span>C#</span>
                         </span>
                         <span>2y</span>
+                    </div>
+                    <div
+                        class="skill"
+                        style="--color: #4DA1E6; --progress: 50%;"
+                    >
+                        <span>
+                            <img src={c} />
+                            <span>C</span>
+                        </span>
+                        <span>1y</span>
                     </div>
                     <div
                         class="skill"
@@ -337,16 +388,6 @@
                     </div>
                     <div
                         class="skill"
-                        style="--color: #4DA1E6; --progress: 40%;"
-                    >
-                        <span>
-                            <img src={c} />
-                            <span>C</span>
-                        </span>
-                        <span>1y</span>
-                    </div>
-                    <div
-                        class="skill"
                         style="--color: #56B6C2; --progress: 20%;"
                     >
                         <span>
@@ -357,10 +398,16 @@
                     </div>
                 </div>
             </div>
+
             <div
-                class="flex flex-col md:flex-row justify-between pt-16"
+                class="flex flex-col md:flex-row justify-between pt-16 flex-wrap"
                 transition:fade
             >
+                <h1
+                    class="px-4 md:px-0 mt-8 text-3xl md:text-5xl font-display font-bold"
+                >
+                    Experience
+                </h1>
                 <div class="experience">
                     <span class="text-xl font-semibold font-display"
                         >Endorphi - Fullstack developer</span
@@ -393,11 +440,11 @@
     }
 
     .experience {
-        @apply text-dark-100 rounded dark:text-dark-500 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25 flex flex-col py-4;
+        @apply text-dark-100 rounded dark:text-dark-500 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25 flex flex-col py-4 flex-shrink-0 mt-8;
     }
 
     .skill {
-        @apply flex justify-between items-start font-mono text-dark-100 rounded dark:text-dark-300  bg-dark-400 dark:bg-dark-100 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25;
+        @apply flex justify-between items-start font-mono text-dark-100 rounded dark:text-dark-300  bg-dark-400 dark:bg-dark-100 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25 min-w-[160px];
         background: linear-gradient(
             90deg,
             var(--color) 0%,
@@ -408,11 +455,11 @@
     }
 
     .skill > span:nth-child(1) {
-        @apply flex flex-nowrap;
+        @apply flex flex-nowrap h-full items-center justify-center;
     }
 
     .skill > span:nth-child(2) {
-        @apply p-2 h-full;
+        @apply h-full flex items-center justify-center;
     }
 
     .skill > span > img {
@@ -423,7 +470,7 @@
     }
 
     .skill > span > span {
-        @apply p-2 h-full mix-blend-difference;
+        @apply h-full mix-blend-difference flex items-center justify-center;
     }
 
     .social-button {

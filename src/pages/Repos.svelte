@@ -49,11 +49,7 @@
 
 <!-- TODO: Automatically divide repos into pages -->
 {#if displayRepos}
-    <div
-        class="bg-gradient-to-bl from-green-500 dark:from-green-800 to-blue-600 dark:to-blue-800"
-        in:blur
-        out:blur
-    >
+    <div class="bg-gradient-to-bl from-green-600 to-blue-600" in:blur out:blur>
         <div class="container mx-auto p-4 pb-32">
             {#each repos as repo, i}
                 {#key repo}
