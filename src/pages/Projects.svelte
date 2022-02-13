@@ -166,14 +166,14 @@
             <div
                 in:slide
                 out:slide
-                class="container max-h-full overflow-x-scroll no-scrollbar p-4 md:rounded bg-dark-300 dark:bg-dark-100 transition-all duration-300 text-white hoverable"
+                class="container max-h-full overflow-x-scroll no-scrollbar p-4 md:rounded bg-white dark:bg-dark-100 transition-all duration-300 text-dark-50 dark:text-white hoverable"
             >
                 <div class="flex place-content-between p-4 pb-2">
                     <span class="text-xl font-bold"
                         >{fullscreen_project.name}</span
                     >
                     <button
-                        class="text-xl text-button hoverable"
+                        class="text-xl text-button-light hoverable dark:text-white text-dark-50"
                         on:click={() => {
                             setFullScreenProject(null);
                         }}>x</button
@@ -274,7 +274,7 @@
                                     ? fullscreen_project?.name === project.name
                                         ? 'dark:bg-dark-100'
                                         : 'opacity-10'
-                                    : ''} m-4 bg-dark-300 dark:bg-dark-50 rounded text-white transition-all duration-300 hoverable"
+                                    : ''} m-4 dark:bg-dark-50 rounded dark:text-white text-dark-50 transition-all duration-300 hoverable border-2 border-dark-100 dark:border-0"
                                 in:slide={{ delay: 150 * id }}
                                 out:slide={{
                                     delay: 150 * (projects.length - (id + 1)),
@@ -294,10 +294,11 @@
                                 <div
                                     class="flex place-content-between p-4 pb-2"
                                 >
-                                    <span class="text-lg font-medium"
-                                        >{project.name}</span
-                                    ><button
-                                        class="text-button hoverable"
+                                    <span class="text-lg font-medium">
+                                        {project.name}
+                                    </span>
+                                    <button
+                                        class="text-button-light hoverable"
                                         on:click={() => {
                                             setFullScreenProject(project);
                                         }}
@@ -306,8 +307,10 @@
                                         }}
                                         on:mouseleave={() => {
                                             ctr.hideText();
-                                        }}>[ ]</button
+                                        }}
                                     >
+                                        [ ]
+                                    </button>
                                 </div>
                                 <div class="p-4 pt-2 flex flex-row flex-wrap">
                                     {#if project.media.type === "video"}

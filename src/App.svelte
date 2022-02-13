@@ -59,7 +59,7 @@
 <!-- TODO: Fix wierd behaviour where pages dont appear completely -->
 <div class="page-container">
     <div class="page">
-        <div class="h-screen overflow-scroll md:no-scrollbar">
+        <div class="h-full overflow-scroll md:no-scrollbar">
             <Home {onIntroFinished} bind:this={homePage} />
             <Repos bind:this={reposPage} />
             <Timeline bind:this={timelinePage} />
@@ -69,7 +69,7 @@
     </div>
 </div>
 
-<div class="w-screen p-8 z-50 absolute bottom-0 font-mono">
+<div class="w-full p-8 z-50 absolute bottom-0 font-mono">
     <Help bind:this={helpPage} />
     <Error bind:this={errorPage} />
     {#if showCommandInput}
@@ -147,11 +147,11 @@
     /* ============================================================ */
 
     .page-container {
-        @apply flex flex-row flex-nowrap w-screen h-screen dark:bg-dark-50 dark:text-white;
+        @apply flex flex-row flex-nowrap w-full h-full dark:bg-dark-50 dark:text-white;
     }
 
     .page {
-        @apply w-screen h-screen min-w-full min-h-screen flex-shrink-0 overflow-hidden;
+        @apply w-full min-w-full min-h-full flex-shrink-0 overflow-hidden;
     }
 
     /* ============================================================ */
@@ -160,6 +160,10 @@
 
     .text-button {
         @apply text-white px-2 hover:opacity-80 hover:text-black hover:bg-dark-200 dark:hover:bg-dark-300 transition-all rounded hover:font-bold;
+    }
+
+    .text-button-light {
+        @apply dark:text-white text-dark-50 px-2 hover:opacity-80 hover:text-black hover:bg-dark-500 dark:hover:bg-dark-300 transition-all rounded hover:font-bold;
     }
 
     /* ============================================================ */

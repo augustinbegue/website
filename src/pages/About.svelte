@@ -231,7 +231,7 @@
                 <span>Resume</span>
             </button>
         </div>
-        <div class="container pt-8">
+        <div class="container pt-16">
             <div
                 class="flex flex-col-reverse md:flex-row justify-between"
                 transition:slide
@@ -408,7 +408,7 @@
                 >
                     Experience
                 </h1>
-                <div class="experience">
+                <div class="experience md:m-0 m-4">
                     <span class="text-xl font-semibold font-display"
                         >Endorphi - Fullstack developer</span
                     >
