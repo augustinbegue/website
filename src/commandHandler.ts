@@ -27,15 +27,10 @@ export class commandHandler {
         this._currentPage = pages[0];
         this._currentPageIndex = 0;
 
-        this.addCommand("help", async () => {
-            await errorPage.outro();
-            await helpPage.intro();
-        });
-
         this.addCommand("display home", async () => {
             this.hideAll();
             await this._currentPage.outro();
-            await pages[0].intro();
+            pages[0].intro();
             this._currentPage = pages[0];
             this._currentPageIndex = 0;
         });
@@ -43,7 +38,7 @@ export class commandHandler {
         this.addCommand("display about", async () => {
             this.hideAll();
             await this._currentPage.outro();
-            await pages[1].intro();
+            pages[1].intro();
             this._currentPage = pages[1];
             this._currentPageIndex = 1;
         });
@@ -51,15 +46,15 @@ export class commandHandler {
         this.addCommand("display projects", async () => {
             this.hideAll();
             await this._currentPage.outro();
-            await pages[2].intro();
+            pages[2].intro();
             this._currentPage = pages[2];
             this._currentPageIndex = 2;
         });
 
-        this.addCommand("display timeline", async () => {
+        this.addCommand("display posts", async () => {
             this.hideAll();
             await this._currentPage.outro();
-            await pages[3].intro();
+            pages[3].intro();
             this._currentPage = pages[3];
             this._currentPageIndex = 3;
         });
@@ -67,35 +62,49 @@ export class commandHandler {
         this.addCommand("display repos", async () => {
             this.hideAll();
             await this._currentPage.outro();
-            await pages[4].intro();
+            pages[4].intro();
             this._currentPage = pages[4];
             this._currentPageIndex = 4;
+        });
+
+        this.addCommand("help", async () => {
+            await errorPage.outro();
+            await helpPage.intro();
         });
     }
 
     public nextPage = async () => {
-        await this.pages[this._currentPageIndex].outro();
         this._currentPageIndex = (this._currentPageIndex + 1) % this.pages.length;
-        this.pages[this._currentPageIndex].intro();
-        this._currentPage = this.pages[this._currentPageIndex];
+
+        window.history.pushState({}, document.title, `/${this._commands[this._currentPageIndex].key.split(' ')[1]}`);
+        this._commands[this._currentPageIndex].command();
     };
     public prevPage = async () => {
-        await this.pages[this._currentPageIndex].outro();
         this._currentPageIndex = (this._currentPageIndex - 1 + this.pages.length) % this.pages.length;
-        this.pages[this._currentPageIndex].intro();
-        this._currentPage = this.pages[this._currentPageIndex];
+
+        window.history.pushState({}, document.title, `/${this._commands[this._currentPageIndex].key.split(' ')[1]}`);
+        this._commands[this._currentPageIndex].command();
     };
 
     // Handle the command from the user
-    public handleCommand(command: string) {
-        this.commandHistory.push(command);
+    public handleCommand(command: string, pushHistory = true) {
+        command = command.toLowerCase();
+        command = command.trim();
+        let pathName = command.split(' ')[1];
 
         for (const c of this._commands) {
             if (c.key === command) {
+                if (pushHistory) {
+                    window.history.pushState({}, document.title, `/${pathName}`);
+                }
+
                 c.command();
                 return;
             }
         }
+
+        if (pushHistory)
+            this.commandHistory.push(command);
 
         this.displayError(`Command not found: ${command}`);
     }

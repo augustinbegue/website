@@ -4,7 +4,16 @@
     import { popup } from "../transitions";
     import Typed from "typed.js";
 
-    let showStep1 = true;
+    onMount(() => {
+        if (window.location.pathname.length === 1) {
+            showStep1 = true;
+            setTimeout(() => {
+                animationStep1();
+            }, 1);
+        }
+    });
+
+    let showStep1 = false;
     let showStep2 = false;
     let showStep3 = false;
 
@@ -15,10 +24,10 @@
     let homeLoadingBarEl: HTMLElement;
 
     // Animations
-    const animationStep1 = () => {
+    export const animationStep1 = () => {
         // Typed.js
         let container = document.querySelector(
-            ".page-container",
+            ".page-container"
         ) as HTMLElement;
 
         container.style.backgroundColor = "rgba(0,0,0,255)";
@@ -37,7 +46,7 @@
     const animationStep2 = () => {
         homeLoadingBarEl = document.getElementById("homeLoadingBar");
         let container = document.querySelector(
-            ".page-container",
+            ".page-container"
         ) as HTMLElement;
         container.style.backgroundColor = "";
         container.style.color = "";
@@ -62,10 +71,6 @@
         await intro();
         onIntroFinished();
     };
-
-    onMount(() => {
-        animationStep1();
-    });
 
     export function intro() {
         return new Promise<void>((resolve) => {

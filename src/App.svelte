@@ -7,13 +7,14 @@
 
     import Home from "./pages/Home.svelte";
     import Repos from "./pages/Repos.svelte";
-    import Timeline from "./pages/Timeline.svelte";
+    import Timeline from "./pages/Posts.svelte";
     import About from "./pages/About.svelte";
     import Projects from "./pages/Projects.svelte";
 
     import CommandInput from "./modules/CommandInput.svelte";
     import Help from "./modules/Help.svelte";
     import Error from "./modules/Error.svelte";
+    import Posts from "./pages/Posts.svelte";
 
     // Command Handler
     let commandInput: HTMLInputElement;
@@ -23,7 +24,7 @@
 
     let homePage: PageComponent;
     let reposPage: PageComponent;
-    let timelinePage: PageComponent;
+    let postsPage: PageComponent;
     let aboutPage: PageComponent;
     let projectsPage: PageComponent;
     let pages: PageComponent[];
@@ -51,8 +52,19 @@
     };
 
     onMount(() => {
-        pages = [homePage, aboutPage, projectsPage, timelinePage, reposPage];
+        pages = [homePage, aboutPage, projectsPage, postsPage, reposPage];
         handler = new commandHandler(commandInput, helpPage, errorPage, pages);
+
+        // Custom router
+        let pageName = window.location.pathname.split("/")[1];
+
+        if (pageName.length > 0) {
+            showCommandInput = true;
+            ctr = new cursorTracker();
+
+            let command = `display ${pageName}`;
+            handler.handleCommand(command, false);
+        }
     });
 </script>
 
@@ -62,7 +74,7 @@
         <div class="h-full overflow-scroll md:no-scrollbar">
             <Home {onIntroFinished} bind:this={homePage} />
             <Repos bind:this={reposPage} />
-            <Timeline bind:this={timelinePage} />
+            <Posts bind:this={postsPage} />
             <About {ctr} bind:this={aboutPage} />
             <Projects {ctr} bind:this={projectsPage} />
         </div>

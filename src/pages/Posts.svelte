@@ -17,5 +17,5 @@
 </script>
 
 {#if display}
-    timeline
+    Posts
 {/if}

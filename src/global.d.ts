@@ -11,6 +11,7 @@ interface Link {
 }
 
 interface Project {
+    path: string;
     name: string;
     description: string;
     link?: Link;
@@ -22,6 +23,7 @@ interface Project {
 }
 
 export interface PageComponent {
+    animationStep1?: () => void;
     intro: () => Promise<void>;
     outro: () => Promise<void>;
 }

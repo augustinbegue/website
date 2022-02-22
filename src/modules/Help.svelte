@@ -42,11 +42,9 @@
             <p>display [page] - displays the selected page</p>
             <ul>
                 <li>-> home - home page</li>
-                <li>
-                    -> about - bunch of infos about me and how I work (+ resume)
-                </li>
+                <li>-> about - bunch of infos about me (+ resume)</li>
                 <li>-> projects - list of the projects I've done</li>
-                <li>-> timeline - timeline of projects, life and experience</li>
+                <li>-> posts - posts I've written</li>
                 <li>-> repos - list of my github repos</li>
             </ul>
             <br />
