@@ -2,7 +2,7 @@
     import type { Project } from "../global";
     import { slide, blur, fade } from "svelte/transition";
     import { onMount } from "svelte";
-    import { cursorTracker } from "../cursorTracker";
+    import type { cursorTracker } from "../cursorTracker";
 
     let display = false;
     export let ctr: cursorTracker;
@@ -284,7 +284,7 @@
                                 }}
                                 on:mouseenter={() => {
                                     ctr.displayText(
-                                        project.tags.join(" ") + " ",
+                                        project.tags.join(" ") + " "
                                     );
                                 }}
                                 on:mouseleave={() => {

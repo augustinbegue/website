@@ -33,6 +33,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@primer/octicons": "^16.2.0",
     "@rollup/plugin-image": "^2.1.1",
+    "firebase": "^9.6.7",
     "octokit": "^1.7.0",
     "rollup-plugin-postcss": "^4.0.2",
     "sirv-cli": "^1.0.0",
