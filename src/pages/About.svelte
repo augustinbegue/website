@@ -11,10 +11,41 @@
     import electron from "../assets/electron.svg";
     import react from "../assets/react.svg";
     import { onMount } from "svelte";
-    import { cursorTracker } from "../cursorTracker";
+    import type { cursorTracker } from "../cursorTracker";
+    import type { Experience } from "../global";
+    import {
+        collection,
+        getDocs,
+        orderBy,
+        query,
+        QuerySnapshot,
+    } from "firebase/firestore";
+    import { firestore } from "../main";
 
     let display = false;
     export let ctr: cursorTracker;
+
+    let experiences: Experience[] = [];
+    let experiencePromise: Promise<Experience[]>;
+
+    onMount(() => {
+        const experienceQuery = query(
+            collection(firestore, "experience"),
+            orderBy("date", "desc"),
+        );
+
+        experiencePromise = new Promise(async (resolve, reject) => {
+            let snapshot = (await getDocs(
+                experienceQuery,
+            )) as QuerySnapshot<Experience>;
+
+            snapshot.forEach((doc) => {
+                experiences.push(doc.data());
+            });
+
+            resolve(experiences);
+        });
+    });
 
     function initCanvas() {
         let canvas = document.getElementById("me") as HTMLCanvasElement;
@@ -408,27 +439,37 @@
                 >
                     Experience
                 </h1>
-                <div class="experience md:m-0 m-4">
-                    <span class="text-xl font-semibold font-display"
-                        >Endorphi - Fullstack developer</span
+                {#await experiencePromise}
+                    <div
+                        class="z-30 flex justify-center items-center w-full py-8"
                     >
-                    <span class="font-mono">
-                        2mo |
-                        {#each ["angular", "asp.net"] as tag}
-                            <span
-                                class="m-1 px-3 rounded-full animation-onedark-rainbow text-dark-50 text-sm"
-                                >{tag}</span
-                            >
-                        {/each}
-                        | Internship |
-                        <span class="text-sm">
-                            <span class="text-gray-500">
-                                <i class="fas fa-map-marker-alt" />
-                                Paris, France
+                        <i class="fas fa-circle-notch fa-spin fa-2x" />
+                    </div>
+                {:then experiences}
+                    {#each experiences as experience}
+                        <div class="experience md:m-0 m-4">
+                            <span class="text-xl font-semibold font-display">
+                                {experience.title}
                             </span>
-                        </span>
-                    </span>
-                </div>
+                            <span class="font-mono">
+                                {experience.duration} |
+                                {#each experience.tags as tag}
+                                    <span
+                                        class="m-1 px-3 rounded-full animation-onedark-rainbow text-dark-50 text-sm"
+                                        >{tag}</span
+                                    >
+                                {/each}
+                                | {experience.type} |
+                                <span class="text-sm">
+                                    <span class="text-gray-500">
+                                        <i class="fas fa-map-marker-alt" />
+                                        {experience.location}
+                                    </span>
+                                </span>
+                            </span>
+                        </div>
+                    {/each}
+                {/await}
             </div>
         </div>
     </div>

@@ -1,5 +1,7 @@
 /// <reference types="svelte" />
 
+import type { Timestamp } from "firebase/firestore";
+
 interface Media {
     type: "image" | "video";
     src: string;
@@ -20,6 +22,16 @@ interface Project {
     tags: string[];
     dates: string[];
     status: "in progress" | "inactive" | "completed" | "abandoned";
+}
+
+interface Experience {
+    duration: string;
+    title: string;
+    description: string;
+    type: string;
+    tags: string[];
+    date: Timestamp;
+    location: string;
 }
 
 export interface PageComponent {
