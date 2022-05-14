@@ -27,7 +27,7 @@
     export const animationStep1 = () => {
         // Typed.js
         let container = document.querySelector(
-            ".page-container"
+            ".page-container",
         ) as HTMLElement;
 
         container.style.backgroundColor = "rgba(0,0,0,255)";
@@ -46,7 +46,7 @@
     const animationStep2 = () => {
         homeLoadingBarEl = document.getElementById("homeLoadingBar");
         let container = document.querySelector(
-            ".page-container"
+            ".page-container",
         ) as HTMLElement;
         container.style.backgroundColor = "";
         container.style.color = "";
@@ -291,7 +291,9 @@
                     in:slide={{ delay: 400, duration: 600 }}
                     out:slide={{ duration: 600 }}
                 >
-                    <h4 class=" text-base font-medium">19 yo</h4>
+                    <h4 class=" text-base font-medium">
+                        {new Date().getFullYear() - 2002} yo
+                    </h4>
                     <h4 class=" text-base font-medium">student @ Epita</h4>
                     <h4 class=" text-base font-medium">Paris, France</h4>
                 </div>

@@ -2,17 +2,9 @@
     import { fade, slide, blur } from "svelte/transition";
 
     import me from "../assets/me.png";
-    import typescript from "../assets/typescript.svg";
-    import c from "../assets/c.svg";
-    import csharp from "../assets/c_sharp.svg";
-    import angular from "../assets/angular.svg";
-    import firebase from "../assets/firebase.svg";
-    import svelte from "../assets/svelte.svg";
-    import electron from "../assets/electron.svg";
-    import react from "../assets/react.svg";
     import { onMount } from "svelte";
     import type { cursorTracker } from "../cursorTracker";
-    import type { Experience } from "../global";
+    import type { Experience, Skill } from "../global";
     import {
         collection,
         getDocs,
@@ -27,6 +19,9 @@
 
     let experiences: Experience[] = [];
     let experiencePromise: Promise<Experience[]>;
+
+    let skills: Skill[] = [];
+    let skillPromise: Promise<Skill[]>;
 
     onMount(() => {
         const experienceQuery = query(
@@ -44,6 +39,23 @@
             });
 
             resolve(experiences);
+        });
+
+        const skillQuery = query(
+            collection(firestore, "skills"),
+            orderBy("percent", "desc"),
+        );
+
+        skillPromise = new Promise(async (resolve, reject) => {
+            let snapshot = (await getDocs(skillQuery)) as QuerySnapshot<Skill>;
+
+            snapshot.forEach((doc) => {
+                skills.push(doc.data());
+            });
+
+            console.log(skills);
+
+            resolve(skills);
         });
     });
 
@@ -270,11 +282,10 @@
                 <p
                     class="px-4 md:px-0 font-mono text-lg md:text-xl text-dark-100 dark:text-dark-500"
                 >
-                    Hi, I'm Augustin, a 19yo aspiring engineer from Paris,
-                    France. Currently, I'm 2nd year student at <a
-                        href="https://epita.fr"
-                        class="hoverable">EPITA</a
-                    >
+                    Hi, I'm Augustin, a {new Date().getFullYear() - 2002}yo
+                    aspiring engineer from Paris, France. Currently, I'm a 2nd
+                    year student at
+                    <a href="https://epita.fr" class="hoverable">EPITA</a>
                     where I learn maths & computer science to obtain an engineering
                     degree. I'm also a self-taught web developer. On my free time,
                     I enjoy cycling and am a Formula 1 and
@@ -327,111 +338,47 @@
                 <div
                     class="w-full px-4 md:pr-0 lg:pl-32 grid grid-cols-2 gap-4"
                 >
-                    <div
-                        class="skill hoverable"
-                        style="--color: #61AFEF; --progress: 80%;"
-                        on:mouseleave={() => ctr.hideText()}
-                        on:mouseenter={() => {
-                            ctr.displayText(
-                                "nodejs / discord.js / express.js / ",
-                            );
-                        }}
-                    >
-                        <span>
-                            <img src={typescript} />
-                            <span>TypeScript</span>
-                        </span>
-                        <span>4y+</span>
-                    </div>
-                    <div
-                        class="skill"
-                        style="--color: #E06C75; --progress: 70%;"
-                    >
-                        <span>
-                            <img src={angular} />
-                            <span>Angular</span>
-                        </span>
-                        <span>4y+</span>
-                    </div>
-                    <div
-                        class="skill"
-                        style="--color: #3B94DD; --progress: 65%;"
-                    >
-                        <span>
-                            <i class="fas fa-database text-blue-500 fa-2x" />
-                            <span>SQL</span>
-                        </span>
-                        <span>4y+</span>
-                    </div>
-                    <div
-                        class="skill"
-                        style="--color: #464B57; --progress: 60%;"
-                    >
-                        <span>
-                            <img src={electron} />
-                            <span>Electron</span>
-                        </span>
-                        <span>2y</span>
-                    </div>
-                    <div
-                        class="skill"
-                        style="--color: #E5C07B; --progress: 60%;"
-                    >
-                        <span>
-                            <img src={firebase} />
-                            <span>Firebase</span>
-                        </span>
-                        <span>2y+</span>
-                    </div>
-                    <div
-                        class="skill hoverable"
-                        style="--color: #98C379; --progress: 55%;"
-                        on:mouseleave={() => ctr.hideText()}
-                        on:mouseenter={() => {
-                            ctr.displayText("Unity / ASP.NET / .NET Core / ");
-                        }}
-                    >
-                        <span>
-                            <img src={csharp} />
-                            <span>C#</span>
-                        </span>
-                        <span>2y</span>
-                    </div>
-                    <div
-                        class="skill"
-                        style="--color: #4DA1E6; --progress: 50%;"
-                    >
-                        <span>
-                            <img src={c} />
-                            <span>C</span>
-                        </span>
-                        <span>1y</span>
-                    </div>
-                    <div
-                        class="skill"
-                        style="--color: #ff7b2e; --progress: 45%;"
-                    >
-                        <span>
-                            <img src={svelte} />
-                            <span>Svelte</span>
-                        </span>
-                        <span>8mo+</span>
-                    </div>
-                    <div
-                        class="skill"
-                        style="--color: #56B6C2; --progress: 20%;"
-                    >
-                        <span>
-                            <img src={react} />
-                            <span>React</span>
-                        </span>
-                        <span>6mo+</span>
-                    </div>
+                    {#await skillPromise}
+                        <div
+                            class="z-30 flex justify-center items-center w-full py-8"
+                        >
+                            <i class="fas fa-circle-notch fa-spin fa-2x" />
+                        </div>
+                    {:then skills}
+                        {#each skills as skill}
+                            <div
+                                class="skill {skill.tags.length > 0
+                                    ? 'hoverable'
+                                    : ''}"
+                                style="--color: {skill.color}; --progress: {skill.percent}%;"
+                                on:mouseleave={() =>
+                                    skill.tags.length > 0
+                                        ? ctr.hideText()
+                                        : null}
+                                on:mouseenter={() => {
+                                    skill.tags.length > 0
+                                        ? ctr.displayText(
+                                              skill.tags.join(" / ") + " / ",
+                                          )
+                                        : null;
+                                }}
+                            >
+                                <span>
+                                    <img src={skill.icon} />
+                                    <span>{skill.displayName}</span>
+                                </span>
+                                <span>
+                                    {new Date().getFullYear() -
+                                        skill.startTime.toDate().getFullYear()}y
+                                </span>
+                            </div>
+                        {/each}
+                    {/await}
                 </div>
             </div>
 
             <div
-                class="flex flex-col md:flex-row justify-between pt-16 flex-wrap"
+                class="flex flex-col justify-between pt-16 flex-wrap"
                 transition:fade
             >
                 <h1
@@ -482,6 +429,10 @@
 
     .experience {
         @apply text-dark-100 rounded dark:text-dark-500 border-dashed border-y-2 border-dark-50/25 dark:border-dark-500/25 flex flex-col py-4 flex-shrink-0 mt-8;
+    }
+
+    .skill.hoverable {
+        @apply border-solid;
     }
 
     .skill {

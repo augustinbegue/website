@@ -34,6 +34,15 @@ interface Experience {
     location: string;
 }
 
+interface Skill {
+    color: string;
+    displayName: string;
+    icon: string;
+    percent: number;
+    tags: string[];
+    startTime: Timestamp;
+}
+
 export interface PageComponent {
     animationStep1?: () => void;
     intro: () => Promise<void>;
